@@ -59,6 +59,9 @@ jobs:
         working-directory: Free-VST-Client
         run: |
           npm ci
+          # Los paquetes de plugins no están en el repositorio: se arman con los VST3 recién compilados
+          # (también verifica que la versión de cada DLL coincida con CMake).
+          node build/pack-eq.js --all
           npm test
 
       - name: Artefactos (VST3)
