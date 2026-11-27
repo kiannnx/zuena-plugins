@@ -76,6 +76,10 @@ actualizado: 2026-11-26
 | Guía de inicio · Conexión · Ajustes · Conexión (0.2.3) | Interruptor «Ayudar con estadísticas anónimas» / «Estadísticas anónimas» (apagado por defecto) + aviso único a quien ya hizo la guía | Activar: ping anónimo a Supabase (`zuena_plugins_ping`) al arrancar, cada 12 h o al cambiar plugins. Apagar: borra lo enviado (`zuena_plugins_forget`) y cambia el identificador. Ver [[Web-Descarga-y-Panel]] | `test/core.test.js` (3 tests `stats:`) + E2E `e2e/stats.js` |
 | Ajustes · Launcher | Descargar actualización · Reiniciar y actualizar · Instalar en este equipo | Descarga verificada, reemplazo al cerrar, instalación desde copia portátil | Tests unitarios de `launcher-update` + prueba real del reemplazo |
 | Catálogo · Carrusel | Arrastre · rueda · ‹ › · puntos · ← → Inicio Fin · clic | Mueve/abre; el clic tras arrastrar ya no se pierde | E2E demo `Catálogo: muro…` + prueba de carrusel |
+| Instalados · Actualizar todo (0.2.4) | Botón «Actualizar todo (N)» en el encabezado cuando hay versiones nuevas | Actualiza cada plugin de a uno (un solo aviso de administrador a la vez) y resume el resultado | E2E `update.js` |
+| Instalados · Novedades (0.2.4) | Desplegable «Novedades de vX» en la fila con actualización | Muestra el changelog de esa versión desde el catálogo | E2E `update.js` |
+| Apertura (0.2.4) | Animación de marca al abrir (sin controles) | Punto y Z, nombre y luz iridiscente; solo transform/opacity, no bloquea clics, se quita sola; con movimiento reducido, fundido corto | E2E `update.js` (se quita del DOM) |
+| Windows · Aplicaciones instaladas (0.2.4) | Entrada «ZUENA Plugins» con botón Desinstalar | `--uninstall`: confirma, quita accesos y entrada y borra la carpeta al cerrar; no borra los plugins VST3. La escriben el instalador y el launcher al arrancar | E2E `install-self.js` · `test:setup` · `core.test.js` |
 | Modo demo | Badge `MODO DEMO` + nota en Ajustes | ✅ |
 
 > [!check] Resultado de auditoría

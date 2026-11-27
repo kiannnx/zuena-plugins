@@ -37,6 +37,9 @@ const { buildManifest, MANIFEST_REL, readBundleVersion } = require('../src/main/
   const ok = (m) => console.log(`✔ ${m}`);
   try {
     const hero = '.hero__inner:not(.is-leaving)';
+    // Animación de apertura: se quita sola en poco más de un segundo y no bloquea la interfaz.
+    await win.locator('#intro').waitFor({ state: 'detached', timeout: 4000 });
+    ok('la animación de apertura terminó y se quitó del DOM');
     await win.locator(`${hero} .hero__title`, { hasText: 'ZUENA EQ' }).waitFor({ timeout: 15000 });
     await win.locator(`${hero} .pill--primary`, { hasText: `Actualizar a v${latest}` }).waitFor({ timeout: 10000 });
     ok(`detecta v${older} en disco y ofrece "Actualizar a v${latest}"`);
@@ -50,7 +53,14 @@ const { buildManifest, MANIFEST_REL, readBundleVersion } = require('../src/main/
     assert.ok(notes.some((n) => n.text.includes(`${latest} disponible`) && n.text.includes(older)), 'falta la notificación de actualización');
     ok('notificación "disponible" registrada una vez');
 
-    await win.locator('.scene.is-active [data-a="update"]').click();
+    // Novedades de la versión disponible, desde el changelog del catálogo.
+    const news = catalog.plugins.find((p) => p.id === 'zuena-eq').changelog.find((c) => c.version === latest).items;
+    await win.locator('.scene.is-active .row__news summary', { hasText: `Novedades de v${latest}` }).click();
+    await win.locator('.scene.is-active .row__news li', { hasText: news[0] }).waitFor();
+    ok(`Novedades de v${latest} visibles (${news.length} cambios)`);
+
+    // «Actualizar todo» actualiza cada plugin con versión nueva.
+    await win.locator(`${hero} .pill--primary`, { hasText: 'Actualizar todo (1)' }).click();
     await win.locator('.scene.is-active .row__meta', { hasText: `v${latest}` }).waitFor({ timeout: 30000 });
     assert.equal(await readBundleVersion(bundle, 'zuena-eq'), latest);
     const dll = await fs.stat(path.join(bundle, 'Contents', 'x86_64-win', 'ZUENA EQ.vst3'));

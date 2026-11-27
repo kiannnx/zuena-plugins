@@ -555,3 +555,28 @@ test('EB-32: la página de descarga pide su CSS y su JS con versión (sin mezcla
   assert.match(html, /href="site\.css\?v=\d+"/, 'site.css sin ?v=');
   assert.match(html, /src="site\.js\?v=\d+"/, 'site.js sin ?v=');
 });
+
+// ---------- Desinstalación y «Aplicaciones instaladas» ----------
+const uninstallCore = require('../src/main/core/uninstall');
+
+test('Aplicaciones instaladas: entrada completa y clave redirigible para pruebas', () => {
+  const v = Object.fromEntries(uninstallCore.entryValues({ installDir: 'C:\\X\\ZUENA Plugins', version: '1.2.3', sizeKb: 2048 })
+    .map(([n, t, d]) => [n, { t, d }]));
+  assert.equal(v.DisplayName.d, 'ZUENA Plugins');
+  assert.equal(v.DisplayVersion.d, '1.2.3');
+  assert.equal(v.UninstallString.d, '"C:\\X\\ZUENA Plugins\\ZUENA Plugins.exe" --uninstall');
+  assert.equal(v.DisplayIcon.d, 'C:\\X\\ZUENA Plugins\\ZUENA Plugins.ico');
+  assert.equal(v.NoModify.t, 'REG_DWORD');
+  assert.equal(v.EstimatedSize.d, '2048');
+  assert.match(uninstallCore.uninstallKey({}), /^HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\ZUENA Plugins$/);
+  assert.equal(uninstallCore.uninstallKey({ FREEVST_UNINSTALL_KEY: 'Software\\T' }), 'HKCU\\Software\\T');
+});
+
+test('Desinstalar: el script espera al proceso y borra solo la carpeta de la app', async () => {
+  const script = uninstallCore.removalScript({ pid: 4321, installDir: 'C:\\U\\AppData\\Local\\Programs\\ZUENA Plugins' });
+  assert.match(script, /PID eq 4321/);
+  assert.match(script, /rmdir \/s \/q "C:\\U\\AppData\\Local\\Programs\\ZUENA Plugins"/);
+  assert.equal((script.match(/rmdir/g) || []).length, 1);
+  await assert.rejects(uninstallCore.uninstall({ installDir: 'C:\\Otra', expectedDir: 'C:\\U\\ZUENA Plugins', pid: 1, shortcuts: [] }),
+    /Solo se puede desinstalar la copia instalada/);
+});

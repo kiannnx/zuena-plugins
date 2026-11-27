@@ -39,7 +39,11 @@ const killUnder = (root) => {
   const installed = path.join(fake.LOCALAPPDATA, 'Programs', 'ZUENA Plugins');
   const ok = (m) => console.log(`✔ ${m}`);
 
-  const app = await electron.launch({ executablePath: exe, args: [], env: { ...process.env, ...fake, FREEVST_USER_DATA: userData } });
+  // Entrada de «Aplicaciones instaladas» en una clave de prueba (nunca la real del usuario).
+  const testKey = 'Software\\ZUENA-Pruebas\\Uninstall\\ZUENA Plugins';
+  const regEnv = { FREEVST_UNINSTALL_KEY: testKey };
+  const readKey = () => require('../src/main/core/uninstall').readEntry(regEnv);
+  const app = await electron.launch({ executablePath: exe, args: [], env: { ...process.env, ...fake, ...regEnv, FREEVST_USER_DATA: userData } });
   try {
     const win = await app.firstWindow();
     await win.locator('.hero__title').first().waitFor({ timeout: 20000 });
@@ -69,7 +73,33 @@ const killUnder = (root) => {
     for (let i = 0; i < 30 && !running.length; i += 1) { await sleep(1000); running = procsUnder(installed); }
     assert.ok(running.length, 'la copia instalada se abre sola');
     ok('se abre la copia instalada');
+
+    // La copia instalada se registra en «Aplicaciones instaladas» con su versión y su desinstalador.
+    const version = require('../package.json').version;
+    let entry = null;
+    for (let i = 0; i < 20 && !entry?.DisplayVersion; i += 1) { await sleep(500); entry = await readKey(); }
+    assert.equal(entry?.DisplayName, 'ZUENA Plugins');
+    assert.equal(entry?.DisplayVersion, version);
+    assert.ok(entry?.UninstallString?.includes('--uninstall') && entry.UninstallString.toLowerCase().includes(installed.toLowerCase()), 'UninstallString');
+    ok(`registrada en «Aplicaciones instaladas» (v${entry.DisplayVersion})`);
+
+    // Desinstalar desde Windows: con la app cerrada, quita carpeta, accesos y entrada; no toca los plugins.
+    killUnder(base);
+    await sleep(1500);
+    const child = require('node:child_process').spawn(path.join(installed, 'ZUENA Plugins.exe'), ['--uninstall'], {
+      env: { ...process.env, ...fake, ...regEnv, FREEVST_USER_DATA: userData, FREEVST_UNINSTALL_YES: '1' }, stdio: 'ignore',
+    });
+    await new Promise((r) => child.on('exit', r));
+    let gone = false;
+    for (let i = 0; i < 30 && !gone; i += 1) { await sleep(500); gone = !(await fs.access(installed).then(() => true, () => false)); }
+    assert.ok(gone, 'la carpeta de la app se borra al desinstalar');
+    for (const lnk of [path.join(fake.USERPROFILE, 'Desktop', 'ZUENA Plugins.lnk'), path.join(fake.APPDATA, 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'ZUENA Plugins.lnk')]) {
+      assert.equal(await fs.access(lnk).then(() => true, () => false), false, `queda ${path.basename(lnk)}`);
+    }
+    assert.equal(await readKey(), null, 'la entrada de Windows se quita');
+    ok('desinstalar quita la carpeta, los accesos directos y la entrada de Windows');
   } finally {
+    require('node:child_process').spawnSync('reg.exe', ['delete', 'HKCU\\Software\\ZUENA-Pruebas', '/f'], { stdio: 'ignore' });
     killUnder(base);
     await sleep(1500);
     await fs.rm(base, { recursive: true, force: true }).catch(() => {});

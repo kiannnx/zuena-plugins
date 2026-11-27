@@ -18,7 +18,11 @@ async function main() {
       const limit = Date.now() + 30_000;
       for (;;) {
         try {
-          execFileSync(harness, args, { stdio: 'inherit', timeout: 90_000 });
+          // La entrada de «Aplicaciones instaladas» va a una clave de prueba, nunca a la real del usuario.
+          execFileSync(harness, args, {
+            stdio: 'inherit', timeout: 90_000,
+            env: { ...process.env, FREEVST_UNINSTALL_KEY: 'Software\\ZUENA-Pruebas\\Uninstall\\ZUENA Plugins' },
+          });
           return;
         } catch (error) {
           if (error.code !== 'UNKNOWN' || Date.now() >= limit) throw error;
@@ -46,6 +50,7 @@ async function main() {
     await run('install', setup, scratch, invalid, damaged);
   } finally {
     await fs.rm(scratch, { recursive: true, force: true });
+    try { execFileSync('reg.exe', ['delete', 'HKCU\\Software\\ZUENA-Pruebas', '/f'], { stdio: 'ignore' }); } catch { /* no se creó */ }
   }
 }
 

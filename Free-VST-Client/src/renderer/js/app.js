@@ -117,6 +117,51 @@ async function install(id) {
   if (jobId) toast('info', `Descargando ${p.name}…`);
 }
 
+/** «Novedades» de la versión disponible (changelog del catálogo), desplegable en la fila de Instalados. */
+function newsFor(p) {
+  const entry = p?.changelog?.find((c) => c.version === p.version);
+  if (!entry?.items?.length) return '';
+  return `<details class="row__news"><summary>Novedades de v${esc(p.version)}</summary><ul>${entry.items.map((i) => `<li>${esc(i)}</li>`).join('')}</ul></details>`;
+}
+
+/** Espera a que un trabajo de instalación termine (listo, error o cancelado). */
+function waitJob(jobId, timeoutMs = 15 * 60 * 1000) {
+  const end = Date.now() + timeoutMs;
+  return new Promise((resolve) => {
+    const tick = () => {
+      const j = S.jobs.find((x) => x.id === jobId);
+      if (j && !ACTIVE_PHASES.includes(j.phase)) return resolve(j.phase);
+      if (Date.now() > end) return resolve('timeout');
+      setTimeout(tick, 300);
+    };
+    tick();
+  });
+}
+
+/** Actualiza todos los plugins con versión nueva, de a uno: en Program Files cada instalación puede pedir
+    permiso de administrador y así no se abren varios avisos a la vez. */
+async function updateAll() {
+  if (S.updatingAll) return;
+  const pending = S.catalog.plugins.filter((p) => status(p).kind === 'update');
+  if (!pending.length) return;
+  S.updatingAll = true;
+  renderData();
+  let ok = 0;
+  try {
+    for (const p of pending) {
+      const jobId = await act(() => hub.install(p.id));
+      if (!jobId) continue;
+      toast('info', `Actualizando ${p.name} a v${p.version}…`);
+      if ((await waitJob(jobId)) === 'done') ok += 1;
+    }
+  } finally {
+    S.updatingAll = false;
+    renderData();
+  }
+  if (ok === pending.length) toast('success', ok === 1 ? `${pending[0].name} actualizado` : `${ok} plugins actualizados`);
+  else toast('error', `Se actualizaron ${ok} de ${pending.length}. Revisá la pestaña Descargas.`);
+}
+
 async function uninstall(id) {
   const p = pluginById(id);
   const name = p?.name ?? id;
@@ -255,6 +300,7 @@ function heroModel() {
         sub: n ? `${n} plugin${n === 1 ? '' : 's'} en tu carpeta VST3${u ? ` · ${u} con actualización` : ''}.` : 'Todavía no instalaste ningún plugin.',
         meta: [['Instalados', n], ['Actualizaciones', u]],
         actions: [
+          ...(u ? [{ label: S.updatingAll ? 'Actualizando…' : `Actualizar todo (${u})`, primary: true, run: updateAll }] : []),
           { label: 'Abrir carpeta VST3', icon: ui.folder(), run: () => act(() => hub.openInstallDir()) },
           { label: 'Buscar actualizaciones', run: () => reloadCatalog() },
         ],
@@ -694,6 +740,7 @@ function renderInstalled() {
         <div class="row__name">${esc(name)} ${s.kind === 'update' ? `<span class="chip chip--update">v${esc(p.version)} disponible</span>` : ''}</div>
         <div class="row__meta">${esc(ver)}${inst.installedAt ? ` · instalado ${esc(ago(inst.installedAt))}` : inst.external ? ' · detectado en la carpeta' : ''}</div>
         <div class="row__meta row__path" title="${esc(inst.files[0])}">${esc(inst.files[0])}</div>
+        ${s.kind === 'update' ? newsFor(p) : ''}
       </div>
       <div class="row__actions">
         ${s.kind === 'update' ? '<button class="pill pill--primary pill--sm" data-a="update">Actualizar</button>' : ''}
@@ -1434,11 +1481,21 @@ function onJobs(list) {
   }
 }
 
+/** Animación de apertura: al terminar se quita del DOM (no queda una capa a pantalla completa en el compositor). */
+function finishIntro() {
+  const intro = $('#intro');
+  if (!intro) return;
+  const done = () => intro.remove();
+  intro.addEventListener('animationend', (e) => { if (e.animationName === 'intro-out') done(); });
+  setTimeout(done, 3000); // respaldo si la ventana arranca oculta y no corren las animaciones
+}
+
 async function init() {
   if (!hub) {
     document.body.innerHTML = '<p style="padding:40px;font:16px system-ui">ZUENA Plugins tiene que abrirse desde la aplicación de escritorio.</p>';
     return;
   }
+  finishIntro();
   bindChrome();
   buildDock();
   buildScenes();

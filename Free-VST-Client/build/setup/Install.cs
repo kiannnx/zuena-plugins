@@ -93,6 +93,7 @@ namespace Zuena.Setup
                         shortcuts.Add(new Shortcut(menu, destination));
                         if (desktop != null) shortcuts.Add(new Shortcut(desktop, destination));
                         foreach (var shortcut in shortcuts) shortcut.Commit();
+                        RegisterUninstall(destination);
                     }
                     catch (Exception original)
                     {
@@ -121,6 +122,33 @@ namespace Zuena.Setup
                     mutex.ReleaseMutex();
                 }
             }
+        }
+
+        // Entrada de «Aplicaciones instaladas» (HKCU, sin administrador). Desinstalar abre el launcher con
+        // --uninstall. Si Windows no deja escribirla, el launcher la vuelve a escribir al abrirse.
+        // FREEVST_UNINSTALL_KEY redirige la clave en las pruebas.
+        internal static void RegisterUninstall(string destination)
+        {
+            try
+            {
+                string keyPath = Environment.GetEnvironmentVariable("FREEVST_UNINSTALL_KEY");
+                if (String.IsNullOrWhiteSpace(keyPath))
+                    keyPath = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\" + Product;
+                using (var key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(keyPath))
+                {
+                    string exe = Path.Combine(destination, Executable);
+                    key.SetValue("DisplayName", Product);
+                    key.SetValue("DisplayVersion", Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
+                    key.SetValue("Publisher", "ZUENA");
+                    key.SetValue("DisplayIcon", Path.Combine(destination, Icon));
+                    key.SetValue("InstallLocation", destination);
+                    key.SetValue("UninstallString", "\"" + exe + "\" --uninstall");
+                    key.SetValue("URLInfoAbout", "https://github.com/kiannnx/zuena-plugins");
+                    key.SetValue("NoModify", 1, Microsoft.Win32.RegistryValueKind.DWord);
+                    key.SetValue("NoRepair", 1, Microsoft.Win32.RegistryValueKind.DWord);
+                }
+            }
+            catch (Exception) { /* No es crítico: el launcher la escribe al arrancar. */ }
         }
 
         private static void Restore(Action action, List<Exception> errors)

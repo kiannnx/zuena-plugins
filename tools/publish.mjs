@@ -129,7 +129,9 @@ async function publishLauncher() {
     rmSync(named, { recursive: true, force: true });
     renameSync(appDir, named);
     try {
-      run('tar', ['-a', '-c', '-f', zip, '-C', join(CLIENT, 'dist'), PRODUCT]);
+      // Siempre el tar de Windows (bsdtar crea ZIP con -a): desde Git Bash, `tar` es GNU tar, que no hace ZIP.
+      const winTar = process.platform === 'win32' ? join(process.env.SystemRoot || 'C:\\Windows', 'System32', 'tar.exe') : 'tar';
+      run(winTar, ['-a', '-c', '-f', zip, '-C', join(CLIENT, 'dist'), PRODUCT]);
     } finally {
       renameSync(named, appDir);
     }
@@ -188,7 +190,8 @@ function readme(launcher, catalog) {
   return `# ZUENA Plugins · descargas
 
 Este repositorio publica **solo** los archivos que necesita el launcher de ZUENA Plugins: el catálogo,
-las descargas de los plugins y las versiones del propio launcher. El código fuente no está acá.
+las descargas de los plugins y las versiones del propio launcher. El código fuente es abierto (AGPLv3) y está en
+[kiannnx/zuena-plugins](https://github.com/kiannnx/zuena-plugins).
 
 ## Descargar el launcher (Windows 10/11, x64)
 

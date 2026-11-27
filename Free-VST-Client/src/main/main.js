@@ -17,6 +17,7 @@ const { startDemoServer } = require('./core/demo-server');
 const { startPackageServer } = require('./core/package-server');
 const dist = require('./core/distribution');
 const launcherUpdate = require('./core/launcher-update');
+const uninstallCore = require('./core/uninstall');
 const stats = require('./core/stats');
 
 const DEMO = process.argv.includes('--demo') || process.env.FREEVST_DEMO === '1';
@@ -44,7 +45,11 @@ let checking = null;
 
 // Carpeta de datos aislada (la usa la suite E2E para no tocar los datos reales del usuario).
 if (process.env.FREEVST_USER_DATA) app.setPath('userData', path.resolve(process.env.FREEVST_USER_DATA));
-if (!app.requestSingleInstanceLock()) app.quit();
+// --uninstall: lo abre «Aplicaciones instaladas» de Windows. No compite por la instancia única: si el launcher
+// está abierto, se avisa en lugar de cerrarse en silencio.
+const UNINSTALL = process.argv.includes('--uninstall');
+const primaryInstance = app.requestSingleInstanceLock();
+if (!UNINSTALL && !primaryInstance) app.quit();
 app.setAppUserModelId(dist.APP_USER_MODEL_ID); // necesario para las notificaciones de Windows
 
 const userFile = (name) => path.join(app.getPath('userData'), DEMO ? name.replace('.json', '-demo.json') : name);
@@ -521,7 +526,37 @@ app.on('second-instance', () => {
   win.focus();
 });
 
+/** Desinstalación pedida por Windows (o por la prueba E2E con FREEVST_UNINSTALL_YES=1). */
+async function runUninstall() {
+  const title = 'Desinstalar ZUENA Plugins';
+  if (!app.isPackaged || !dist.isInstalledCopy()) {
+    dialog.showMessageBoxSync({ type: 'info', title, message: 'Esta copia no está instalada en el equipo.', detail: 'Para quitarla, borrá su carpeta.' });
+    return;
+  }
+  if (!primaryInstance) {
+    dialog.showMessageBoxSync({ type: 'warning', title, message: 'Cerrá ZUENA Plugins y volvé a intentar.' });
+    return;
+  }
+  const confirmed = process.env.FREEVST_UNINSTALL_YES === '1' || dialog.showMessageBoxSync({
+    type: 'question', title, buttons: ['Desinstalar', 'Cancelar'], defaultId: 0, cancelId: 1, noLink: true,
+    message: '¿Desinstalar ZUENA Plugins?',
+    detail: 'Se quitan el launcher, sus accesos directos y su entrada en Windows.\nLos plugins de tu carpeta VST3 no se borran: tus proyectos los pueden seguir usando.',
+  }) === 0;
+  if (!confirmed) return;
+  const env = process.env;
+  await uninstallCore.uninstall({
+    installDir: dist.runningRoot(), expectedDir: dist.installRoot(), pid: process.pid,
+    shortcuts: [path.join(env.USERPROFILE || '', 'Desktop', 'ZUENA Plugins.lnk'),
+      path.join(env.APPDATA || '', 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'ZUENA Plugins.lnk')],
+  });
+}
+
 app.whenReady().then(async () => {
+  if (UNINSTALL) {
+    try { await runUninstall(); } catch (e) { dialog.showErrorBox('Desinstalar ZUENA Plugins', e.message); }
+    app.exit(0);
+    return;
+  }
   Menu.setApplicationMenu(null);
   settings = new JsonStore(userFile('settings.json'), {
     installDir: null, catalogUrl: '', theme: 'light', watch: [], notifications: [], updateNotified: {},
@@ -544,6 +579,8 @@ app.whenReady().then(async () => {
   // Copia instalada: el acceso del menú Inicio con el AppUserModelID habilita los avisos de Windows.
   if (app.isPackaged && dist.isInstalledCopy()) {
     try { dist.ensureStartMenuShortcut({ shell, exePath: process.execPath }); } catch { /* sin acceso directo: solo avisos internos */ }
+    // Entrada en «Aplicaciones instaladas» (desinstalar desde Windows), con la versión que corre ahora.
+    uninstallCore.writeEntry({ installDir: dist.runningRoot(), version: app.getVersion() }).catch(() => {});
   }
   setInterval(() => { checkOnline({ force: true }).catch(() => {}); }, CHECK_EVERY_MS).unref?.();
   // Al arrancar: el catálogo lo pide la interfaz; la versión del launcher se revisa aparte.

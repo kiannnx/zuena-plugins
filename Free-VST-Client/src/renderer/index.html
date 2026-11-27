@@ -8,6 +8,15 @@
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
+  <!-- Animación de apertura: solo transform y opacity, no bloquea clics y se quita sola al terminar. -->
+  <div class="intro" id="intro" aria-hidden="true">
+    <div class="intro__light"></div>
+    <div class="intro__mark">
+      <svg class="intro__logo" viewBox="0 0 64 64"><circle class="intro__dot" cx="32" cy="32" r="32"/><path class="intro__z" d="M19 20h26L19 44h26" pathLength="1"/></svg>
+      <div class="intro__name"><span class="intro__brand">ZUENA</span><span class="intro__product">Plugins</span></div>
+    </div>
+  </div>
+
   <div class="bg" aria-hidden="true">
     <div class="bg__base"></div>
     <div class="bg__ray bg__ray--1"></div>

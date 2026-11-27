@@ -817,3 +817,53 @@ html[data-scheme="dark"] .ob__card { background: #17191b; }
 .ob-swatch--dark span:first-child { background: #101112; } .ob-swatch--dark span:last-child { background: #222528; }
 .ob-swatch--system span:first-child { background: #f5f5f3; } .ob-swatch--system span:last-child { background: #101112; }
 html[data-scheme="dark"] .pill--ghost { background: rgb(255 255 255 / .06); color: var(--z-ink); }
+
+/* ---------- Animación de apertura (cada vez que se abre el launcher) ----------
+   Solo transform y opacity (compositor). pointer-events: none: nunca bloquea clics.
+   El trazo de la Z (stroke-dashoffset) es un elemento chico. app.js quita el nodo al terminar. */
+.intro {
+  position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center;
+  background: var(--z-paper); pointer-events: none; overflow: hidden;
+  animation: intro-out 420ms cubic-bezier(.4, 0, .2, 1) 1180ms forwards;
+}
+.intro__mark { display: flex; align-items: center; gap: 18px; }
+.intro__logo { width: 76px; height: 76px; overflow: visible; }
+.intro__dot {
+  fill: var(--logo-bg); transform-origin: 32px 32px; transform: scale(.55); opacity: 0;
+  animation: intro-dot 560ms cubic-bezier(.2, 1.35, .35, 1) 60ms forwards;
+}
+.intro__z {
+  fill: none; stroke: var(--logo-fg); stroke-width: 6.5; stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 1; stroke-dashoffset: 1;
+  animation: intro-z 520ms cubic-bezier(.65, 0, .35, 1) 330ms forwards;
+}
+.intro__name {
+  display: flex; align-items: baseline; gap: 10px; opacity: 0; transform: translateX(-10px);
+  animation: intro-name 520ms cubic-bezier(.2, .8, .2, 1) 560ms forwards;
+}
+.intro__brand { font: 600 30px/1 var(--font-display); letter-spacing: .22em; color: var(--z-ink); }
+.intro__product { font: 400 30px/1 var(--font-display); letter-spacing: -.01em; color: color-mix(in oklab, var(--z-ink) 55%, transparent); }
+.intro__light {
+  position: absolute; inset: -20% -40%; background: var(--iri); opacity: 0; filter: blur(60px);
+  transform: translateX(-60%) rotate(-8deg);
+  animation: intro-light 1100ms cubic-bezier(.4, 0, .2, 1) 420ms forwards;
+}
+html[data-scheme="dark"] .intro__light { mix-blend-mode: screen; }
+@keyframes intro-dot { to { transform: scale(1); opacity: 1; } }
+@keyframes intro-z { to { stroke-dashoffset: 0; } }
+@keyframes intro-name { to { opacity: 1; transform: none; } }
+@keyframes intro-light { 0% { opacity: 0; } 35% { opacity: .22; } 100% { opacity: 0; transform: translateX(60%) rotate(-8deg); } }
+@keyframes intro-out { to { opacity: 0; transform: scale(1.02); visibility: hidden; } }
+@media (prefers-reduced-motion: reduce) {
+  .intro { animation: intro-out 260ms ease 500ms forwards; }
+  .intro__dot, .intro__z, .intro__name { animation: none; opacity: 1; transform: none; stroke-dashoffset: 0; }
+  .intro__light { display: none; }
+}
+
+/* Novedades de una actualización en la fila de Instalados */
+.row__news { margin-top: 6px; font-size: 12.5px; color: var(--z-ink); }
+.row__news summary { cursor: pointer; color: color-mix(in oklab, var(--z-ink) 70%, transparent); font-weight: 600; list-style: none; }
+.row__news summary::-webkit-details-marker { display: none; }
+.row__news summary::before { content: "▸"; display: inline-block; margin-right: 6px; transition: transform var(--dur-fast) var(--ease-out, ease); }
+.row__news[open] summary::before { transform: rotate(90deg); }
+.row__news ul { margin: 6px 0 2px 18px; padding: 0; display: grid; gap: 3px; line-height: 1.4; }

@@ -1,7 +1,7 @@
 {
   "name": "zuena-plugins",
   "productName": "ZUENA Plugins",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "ZUENA Plugins: descarga e instala plugins VST3 gratuitos",
   "main": "src/main/main.js",
   "private": true,
@@ -32,8 +32,11 @@
   },
   "zuena": {
     "releaseNotes": [
-      "Estadísticas anónimas opcionales: apagadas por defecto, se activan en la guía de inicio o en Ajustes › Conexión. Al apagarlas se borra lo enviado.",
-      "Incluye todo lo de 0.2.2: actualización automática e instalación en el equipo desde el zip."
+      "Animación de apertura cada vez que abrís el launcher.",
+      "Actualizar todo: pone al día todos tus plugins de una vez, de a uno.",
+      "Novedades de cada actualización antes de instalarla.",
+      "Aparece en Aplicaciones instaladas de Windows y se puede desinstalar desde ahí. Los plugins no se borran.",
+      "Código abierto bajo AGPLv3."
     ]
   }
 }
