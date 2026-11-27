@@ -9,7 +9,7 @@
   "scripts": {
     "start": "electron .",
     "demo": "electron . --demo",
-    "test": "node --test --test-timeout=30000 test/",
+    "test": "node --test --test-timeout=30000 test/*.test.js",
     "pack:eq": "node build/pack-eq.js",
     "pack:luma": "node build/pack-eq.js zuena-luma",
     "package": "node build/pack-eq.js --all && node build/package.js",
