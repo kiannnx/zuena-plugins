@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: http://127.0.0.1:*; media-src 'self' https: http://127.0.0.1:*; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'" />
+  <title>ZUENA Plugins</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="bg" aria-hidden="true">
+    <div class="bg__base"></div>
+    <div class="bg__ray bg__ray--1"></div>
+    <div class="bg__ray bg__ray--2"></div>
+    <div class="bg__ray bg__ray--3"></div>
+    <div class="bg__blob bg__blob--1"></div>
+    <div class="bg__blob bg__blob--2"></div>
+    <div class="bg__blob bg__blob--3"></div>
+    <div class="bg__floor"></div>
+    <div class="bg__grain"></div>
+  </div>
+
+  <header class="topbar">
+    <div class="brand">
+      <svg class="brand__logo" viewBox="0 0 64 64" role="img" aria-label="ZUENA"><circle cx="32" cy="32" r="32" fill="var(--logo-bg)"/><path d="M19 20h26L19 44h26" fill="none" stroke="var(--logo-fg)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="brand__name">ZUENA</span>
+      <span class="brand__product">Plugins</span>
+      <span class="brand__demo" id="demo-badge" hidden>MODO DEMO</span>
+    </div>
+    <nav class="topnav" aria-label="Acciones">
+      <button class="topnav__btn" id="btn-search" title="Buscar (Ctrl+F)">Buscar</button>
+      <button class="topnav__btn" id="btn-notif" title="Notificaciones">Notificaciones<span class="topnav__badge" id="notif-badge" hidden></span></button>
+      <button class="topnav__btn" id="btn-theme" title="Alternar entre modo claro y oscuro">Oscuro</button>
+      <button class="topnav__btn" id="btn-help" title="Ayuda">Ayuda</button>
+    </nav>
+    <div class="sys">
+      <span class="sys__net" id="net" role="img"></span>
+      <span class="sys__clock" id="clock">--:--</span>
+    </div>
+    <div class="winctl">
+      <button class="winctl__btn" id="win-min" title="Minimizar" aria-label="Minimizar"></button>
+      <button class="winctl__btn" id="win-max" title="Maximizar" aria-label="Maximizar"></button>
+      <button class="winctl__btn winctl__btn--close" id="win-close" title="Cerrar" aria-label="Cerrar"></button>
+    </div>
+  </header>
+
+  <div class="pop glass" id="search-pop" role="dialog" aria-label="Buscar plugins">
+    <div class="search">
+      <span class="search__icon" aria-hidden="true"></span>
+      <input class="search__input" id="search-input" type="search" placeholder="Buscar plugins, etiquetas…" autocomplete="off" spellcheck="false" />
+      <button class="search__clear" id="search-clear" title="Limpiar búsqueda" aria-label="Limpiar búsqueda"></button>
+    </div>
+  </div>
+
+  <div class="pop pop--notif glass" id="notif-pop" role="dialog" aria-label="Notificaciones">
+    <div class="pop__head">
+      <strong>Notificaciones</strong>
+      <div class="pop__head-actions">
+        <button class="link-btn" id="notif-read">Marcar leídas</button>
+        <button class="link-btn" id="notif-clear">Borrar todo</button>
+      </div>
+    </div>
+    <ul class="notif-list" id="notif-list"></ul>
+  </div>
+
+  <main class="stage">
+    <section class="hero" id="hero" aria-live="polite"></section>
+    <section class="scenes" id="scenes"></section>
+  </main>
+
+  <nav class="dock glass" id="dock" aria-label="Secciones"></nav>
+
+  <div class="overlay" id="sheet" hidden>
+    <article class="sheet glass" role="dialog" aria-modal="true" id="sheet-body"></article>
+  </div>
+
+  <div class="overlay" id="modal" hidden>
+    <article class="modal glass" role="dialog" aria-modal="true" id="modal-body"></article>
+  </div>
+
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

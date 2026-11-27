@@ -1,0 +1,71 @@
+# Compila y prueba ZUENA Plugins en Windows en cada cambio. Los VST3 quedan como artefactos:
+# es la base para firmar binarios con un servicio de firma para código abierto (SignPath Foundation).
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    runs-on: windows-2022
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Entorno de Visual Studio (x64)
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Configurar (CMake + Ninja, Release)
+        run: cmake -S . -B build/release -G Ninja -DCMAKE_BUILD_TYPE=Release
+
+      - name: Compilar
+        run: cmake --build build/release --parallel
+
+      - name: Pruebas del motor
+        shell: pwsh
+        run: |
+          & build/release/plugins/ZuenaEQ/run_tests.exe
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & build/release/plugins/ZuenaLuma/luma_tests.exe
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Auditoría de interfaz y VST3
+        shell: pwsh
+        run: |
+          & build/release/plugins/ZuenaEQ/zeq_snapshot_artefacts/Release/zeq_snapshot.exe audit
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & build/release/plugins/ZuenaLuma/luma_qa_artefacts/Release/luma_qa.exe editor
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & build/release/plugins/ZuenaLuma/luma_qa_artefacts/Release/luma_qa.exe host "build/release/plugins/ZuenaLuma/ZuenaLuma_artefacts/Release/VST3/ZUENA Luma.vst3"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: Free-VST-Client/package-lock.json
+
+      - name: Pruebas del launcher
+        working-directory: Free-VST-Client
+        run: |
+          npm ci
+          npm test
+
+      - name: Artefactos (VST3)
+        uses: actions/upload-artifact@v4
+        with:
+          name: zuena-plugins-vst3
+          path: |
+            build/release/plugins/ZuenaEQ/ZuenaEQ_artefacts/Release/VST3/
+            build/release/plugins/ZuenaLuma/ZuenaLuma_artefacts/Release/VST3/
+          if-no-files-found: error

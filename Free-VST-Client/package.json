@@ -1,0 +1,39 @@
+{
+  "name": "zuena-plugins",
+  "productName": "ZUENA Plugins",
+  "version": "0.2.3",
+  "description": "ZUENA Plugins: descarga e instala plugins VST3 gratuitos",
+  "main": "src/main/main.js",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "demo": "electron . --demo",
+    "test": "node --test --test-timeout=30000 test/",
+    "pack:eq": "node build/pack-eq.js",
+    "pack:luma": "node build/pack-eq.js zuena-luma",
+    "package": "node build/pack-eq.js --all && node build/package.js",
+    "package:setup": "node build/setup.js",
+    "test:setup": "node test/setup/check.js",
+    "e2e": "node e2e/run.js && node e2e/normal.js && node e2e/update.js && node e2e/onboarding.js && node e2e/stats.js",
+    "icon": "electron build/make-icon.js",
+    "release": "node build/pack-eq.js --all && node build/package.js && node build/install-local.js",
+    "perf": "node e2e/perf.js",
+    "e2e:packaged": "node e2e/install-self.js && node e2e/online.js \"dist/ZUENA Plugins-win32-x64/ZUENA Plugins.exe\"",
+    "e2e:online": "node e2e/online.js"
+  },
+  "devDependencies": {
+    "@electron/packager": "^20.3.0",
+    "electron": "^45.5.0",
+    "playwright-core": "^1.65.1"
+  },
+  "dependencies": {
+    "yauzl": "^3.4.0"
+  },
+  "zuena": {
+    "releaseNotes": [
+      "Estadísticas anónimas opcionales: apagadas por defecto, se activan en la guía de inicio o en Ajustes › Conexión. Al apagarlas se borra lo enviado.",
+      "Incluye todo lo de 0.2.2: actualización automática e instalación en el equipo desde el zip."
+    ]
+  }
+}

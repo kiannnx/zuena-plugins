@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ZUENA Plugins · Descargar el launcher</title>
+  <meta name="description" content="Plugins de audio VST3 gratis. Descargá el launcher de ZUENA Plugins para Windows: elegís un plugin, se descarga verificado y queda listo en tu DAW." />
+  <meta name="author" content="Luciano Bengolea (k1anN)" />
+  <meta name="color-scheme" content="light dark" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https://github.com https://*.githubusercontent.com data:; media-src 'self' https://github.com https://*.githubusercontent.com; connect-src 'self'; style-src 'self'; script-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+  <meta property="og:title" content="ZUENA Plugins" />
+  <meta property="og:description" content="Plugins de audio VST3 gratis, listos en tu DAW." />
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
+  <link rel="preload" href="assets/fonts/inter-latin-400.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/inter-tight-latin-300-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="site.css?v=2026112604" />
+  <script src="assets/vendor/gsap.min.js" defer></script>
+  <script src="assets/vendor/ScrollTrigger.min.js" defer></script>
+  <script src="site.js?v=2026112604" defer></script>
+</head>
+<body>
+  <div class="light" aria-hidden="true"><span class="orb orb--1"></span><span class="orb orb--2"></span><span class="orb orb--3"></span></div>
+
+  <header class="top" id="top">
+    <a class="brand" href="#inicio" aria-label="ZUENA Plugins, inicio">
+      <img class="brand__logo logo-light" src="assets/logo.svg" alt="" width="32" height="32" />
+      <img class="brand__logo logo-dark" src="assets/logo-invertido.svg" alt="" width="32" height="32" />
+      <span class="brand__name">ZUENA</span><span class="brand__sub">Plugins</span>
+    </a>
+    <a class="ea-badge" href="#acceso-anticipado"><span class="ea-badge__dot" aria-hidden="true"></span>Acceso anticipado</a>
+    <nav class="top__nav" aria-label="Secciones">
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#plugins">Plugins</a>
+      <a href="#preguntas">Preguntas</a>
+    </nav>
+    <a class="btn btn--sm btn--primary top__cta" href="#descargar" data-download>Descargar</a>
+  </header>
+
+  <main>
+    <!-- 1 · Héroe -->
+    <section class="hero" id="inicio" aria-labelledby="hero-title">
+      <div class="hero__copy">
+        <p class="hero__in"><a class="ea-pill" href="#acceso-anticipado"><span class="ea-badge__dot" aria-hidden="true"></span>Acceso anticipado · Gratis · Windows</a></p>
+        <h1 id="hero-title" class="hero__title"><span class="line"><span class="w">Plugins</span> <span class="w">de</span> <span class="w">audio,</span></span> <span class="line"><span class="w"><em>listos</em></span> <span class="w">en</span> <span class="w">tu</span> <span class="w">DAW.</span></span></h1>
+        <p class="lead hero__in">Elegís un plugin, se descarga verificado y queda instalado en la carpeta VST3. Sin cuenta, sin registro y sin pagar.</p>
+        <div class="cta hero__in">
+          <a class="btn btn--primary btn--lg" href="https://github.com/kiannnx/zuena-plugins-releases/releases" data-download>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19h14" /></svg>
+            <span data-download-label>Descargar para Windows</span>
+          </a>
+          <a class="btn btn--lg" href="#como-funciona">Ver cómo funciona</a>
+        </div>
+        <p class="meta hero__in" data-download-meta>Windows 10 y 11 · 64 bits</p>
+        <p class="note" id="os-note" hidden>Por ahora el launcher es solo para Windows. Podés descargarlo igual y abrirlo en una PC con Windows.</p>
+      </div>
+      <figure class="hero__stage">
+        <div class="hero__device">
+          <picture>
+            <source srcset="assets/launcher-oscuro.jpg" media="(prefers-color-scheme: dark)" />
+            <img src="assets/launcher-claro.jpg" alt="El launcher de ZUENA Plugins mostrando ZUENA EQ en Destacado" width="1703" height="1028" fetchpriority="high" />
+          </picture>
+        </div>
+        <span class="hero__glow" aria-hidden="true"></span>
+      </figure>
+      <a class="scroll-cue" href="#manifiesto" aria-label="Seguir bajando"><span></span></a>
+    </section>
+
+    <!-- 2 · Manifiesto: las palabras se encienden con el scroll -->
+    <section class="manifesto" id="manifiesto" aria-label="Qué es ZUENA Plugins">
+      <p class="manifesto__text">Plugins gratis, hechos con cuidado. Se descargan verificados, se instalan solos y te avisan cuando hay algo nuevo. <em>Sin cuenta. Sin vueltas.</em></p>
+    </section>
+
+    <!-- 2b · Acceso anticipado -->
+    <section class="block early" id="acceso-anticipado" aria-labelledby="ea-title">
+      <div class="early__card reveal">
+        <p class="eyebrow"><span class="ea-badge__dot" aria-hidden="true"></span>Acceso anticipado</p>
+        <h2 id="ea-title">Estás entrando <em>temprano</em>.</h2>
+        <p class="early__lead">ZUENA Plugins está en acceso anticipado: ya podés usarlo en tus sesiones, mientras sigue creciendo versión a versión.</p>
+        <div class="early__grid">
+          <div class="early__item reveal"><h3>Qué ya funciona</h3><p>El launcher, la instalación verificada, las actualizaciones automáticas, ZUENA EQ y ZUENA Luma.</p></div>
+          <div class="early__item reveal"><h3>Qué puede cambiar</h3><p>Controles, sonidos de fábrica y funciones. Puede haber errores: guardá copias de tus sesiones.</p></div>
+          <div class="early__item reveal"><h3>Qué viene</h3><p>Más plugins, como VoxTransit, y la interfaz en inglés. Te enterás desde el propio launcher.</p></div>
+        </div>
+        <p class="early__note">Si algo falla, avisale al autor en <a href="https://github.com/kiannnx" rel="noopener">GitHub</a>.</p>
+      </div>
+    </section>
+
+    <!-- 3 · Cómo funciona (fijado en escritorio) -->
+    <section class="how" id="como-funciona" aria-labelledby="how-title">
+      <div class="how__inner">
+        <div class="how__copy">
+          <p class="eyebrow">Cómo funciona</p>
+          <h2 id="how-title">Tres pasos. <em>Una</em> vez.</h2>
+          <ol class="how__steps">
+            <li class="how__step is-active" data-step="0">
+              <span class="how__n">01</span>
+              <div><h3>Elegís</h3><p>Recorrés el catálogo, mirás la ficha y la presentación de cada plugin.</p></div>
+            </li>
+            <li class="how__step" data-step="1">
+              <span class="how__n">02</span>
+              <div><h3>Se verifica</h3><p>La descarga se comprueba con SHA-256 antes de instalarse. Si un byte no coincide, no se instala.</p></div>
+            </li>
+            <li class="how__step" data-step="2">
+              <span class="how__n">03</span>
+              <div><h3>Suena en tu DAW</h3><p>Queda en la carpeta VST3 que escanean todos los DAW. Cuando sale una versión nueva, te avisa.</p></div>
+            </li>
+          </ol>
+          <div class="how__rail" aria-hidden="true"><span></span></div>
+        </div>
+        <div class="how__screens" aria-hidden="true">
+          <div class="how__screen is-active" data-screen="0">
+            <picture>
+              <source srcset="assets/paso-catalogo-oscuro.jpg" media="(prefers-color-scheme: dark)" />
+              <img src="assets/paso-catalogo-claro.jpg" alt="" width="1703" height="1028" loading="lazy" />
+            </picture>
+          </div>
+          <div class="how__screen" data-screen="1">
+            <div class="verify-card">
+              <span class="verify-card__label">Verificando ZUENA EQ</span>
+              <code class="verify-card__hash" data-hash-demo>d370706485b1e27d8e33274fa1617b38…</code>
+              <span class="verify-card__bar"><span></span></span>
+              <span class="verify-card__ok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>SHA-256 coincide</span>
+            </div>
+          </div>
+          <div class="how__screen" data-screen="2">
+            <div class="daw-card">
+              <span class="daw-card__path">C:\Program Files\Common Files\VST3</span>
+              <ul>
+                <li><span class="daw-card__dot"></span>ZUENA EQ.vst3<b>Listo</b></li>
+                <li><span class="daw-card__dot"></span>ZUENA Luma.vst3<b>Listo</b></li>
+              </ul>
+              <span class="daw-card__note">Tu DAW los encuentra al reescanear.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 · Plugins (desplazamiento horizontal en escritorio) -->
+    <section class="plugins" id="plugins" aria-labelledby="plugins-title">
+      <div class="plugins__head">
+        <p class="eyebrow">Catálogo</p>
+        <h2 id="plugins-title">Lo que podés instalar <em>hoy</em>.</h2>
+        <p class="block__lead">El catálogo se actualiza solo dentro del launcher. Cuando sale un plugin o una versión nueva, te avisa.</p>
+      </div>
+      <div class="plugins__viewport">
+        <div class="plugins__track" id="plugin-list" aria-live="polite">
+          <p class="empty">Cargando el catálogo…</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 · Descargar y verificar -->
+    <section class="block download" id="descargar" aria-labelledby="dl-title">
+      <div class="download__card reveal">
+        <p class="eyebrow">Descargar</p>
+        <h2 id="dl-title">Listo para <em>probarlo</em>.</h2>
+        <a class="btn btn--primary btn--lg" href="https://github.com/kiannnx/zuena-plugins-releases/releases" data-download>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19h14" /></svg>
+          <span data-download-label>Descargar para Windows</span>
+        </a>
+        <a class="download__portable" id="download-portable" hidden>Descargar ZIP portátil</a>
+        <dl class="verify">
+          <div><dt>Versión</dt><dd id="v-version">—</dd></div>
+          <div><dt>Publicada</dt><dd id="v-date">—</dd></div>
+          <div><dt>Tamaño</dt><dd id="v-size">—</dd></div>
+          <div class="verify__hash"><dt>SHA-256</dt><dd><code id="v-sha">—</code><button class="copy" id="copy-sha" type="button" hidden>Copiar</button></dd></div>
+        </dl>
+        <p class="download__vt"><a id="vt-link" href="https://www.virustotal.com/gui/home/upload" rel="noopener">Ver este archivo en VirusTotal</a> · <a href="#faq-virus" data-open-faq="faq-virus">¿Cómo sé si tiene virus?</a></p>
+      </div>
+    </section>
+
+    <!-- 6 · Instalación -->
+    <section class="block" id="instalar" aria-labelledby="install-title">
+      <header class="block__head reveal">
+        <p class="eyebrow">Instalación</p>
+        <h2 id="install-title">Instalá <em>ZUENA Plugins</em>.</h2>
+      </header>
+      <ol class="steps" id="steps-setup" hidden>
+        <li class="step reveal">
+          <span class="step__n">01</span>
+          <h3>Abrí el instalador</h3>
+          <p>Ejecutá el archivo que termina en <b>Setup-x64.exe</b> y tocá <b>Continuar</b>.</p>
+        </li>
+        <li class="step reveal">
+          <span class="step__n">02</span>
+          <h3>Elegí tus accesos</h3>
+          <p>Podés agregar un acceso en el escritorio. Con <b>Instalar</b>, ZUENA queda disponible desde Inicio.</p>
+        </li>
+        <li class="step reveal">
+          <span class="step__n">03</span>
+          <h3>Abrí ZUENA Plugins</h3>
+          <p>Terminá el asistente y seguí la guía del launcher para configurar tu catálogo.</p>
+        </li>
+      </ol>
+      <ol class="steps" id="steps-portable">
+        <li class="step reveal">
+          <span class="step__n">01</span>
+          <h3>Descomprimí el .zip</h3>
+          <p>Adentro está la carpeta <b>ZUENA Plugins</b>. Abrí <b>ZUENA Plugins.exe</b>.</p>
+        </li>
+        <li class="step reveal">
+          <span class="step__n">02</span>
+          <h3>Verificá la descarga</h3>
+          <p>Podés contrastar el SHA-256 del ZIP con el que figura en esta página.</p>
+        </li>
+        <li class="step reveal">
+          <span class="step__n">03</span>
+          <h3>Seguí la guía de inicio</h3>
+          <p>Elegís tema, conexión y avisos. Te ofrece instalarlo en el equipo con accesos directos, y desde ahí se actualiza solo.</p>
+        </li>
+      </ol>
+    </section>
+
+    <!-- 7 · Novedades -->
+    <section class="block block--split" id="novedades" aria-labelledby="news-title">
+      <header class="block__head reveal">
+        <p class="eyebrow">Novedades</p>
+        <h2 id="news-title">Qué trae la versión <em id="news-version">nueva</em>.</h2>
+      </header>
+      <ul class="news reveal" id="news-list"><li>Cargando…</li></ul>
+    </section>
+
+    <!-- 8 · Preguntas -->
+    <section class="block" id="preguntas" aria-labelledby="faq-title">
+      <header class="block__head reveal">
+        <p class="eyebrow">Preguntas</p>
+        <h2 id="faq-title">Lo que conviene <em>saber</em>.</h2>
+      </header>
+      <div class="faq">
+        <details class="reveal"><summary>¿Qué significa «acceso anticipado»?</summary><div class="faq__body"><p>Que ZUENA Plugins ya se puede usar, pero todavía está en desarrollo activo. Salen versiones seguido, algunas funciones pueden cambiar y puede haber errores. El launcher te avisa de cada actualización y la instala verificada. Para proyectos importantes, guardá copias de tus sesiones.</p></div></details>
+        <details class="reveal"><summary>¿Es gratis de verdad?</summary><div class="faq__body"><p>Sí. El launcher y los plugins se descargan gratis, sin cuenta y sin registro. Podés usarlos en tus producciones, también en las que publiques o vendas.</p></div></details>
+        <details class="reveal" id="faq-virus"><summary>¿Cómo sé si tiene virus?</summary>
+          <div class="faq__body">
+            <p>No hace falta creernos: lo podés comprobar vos antes de abrirlo.</p>
+            <ol class="faq__list">
+              <li><b>VirusTotal.</b> Analiza un archivo con más de 70 antivirus a la vez. <a id="vt-link-2" href="https://www.virustotal.com/gui/home/upload" rel="noopener">Buscá el launcher por su huella</a>; si nadie lo subió todavía, <a href="https://www.virustotal.com/gui/home/upload" rel="noopener">subí el archivo</a> vos.</li>
+              <li><b>Microsoft Defender.</b> Clic derecho sobre el archivo › <b>Analizar con Microsoft Defender</b>.</li>
+              <li><b>La huella SHA-256.</b> En PowerShell: <code>Get-FileHash .\<span data-download-name>ZUENA-Plugins-win-x64.zip</span></code>. Tiene que dar lo mismo que el SHA-256 de esta página. Si cambia un solo byte, no coincide.</li>
+            </ol>
+            <p><b>Por qué es seguro usarlo:</b></p>
+            <ul class="faq__list">
+              <li>Cada versión se publica en un <a href="https://github.com/kiannnx/zuena-plugins-releases/releases" rel="noopener">repositorio público de GitHub</a> y queda registrada con su fecha.</li>
+              <li>El launcher comprueba el SHA-256 de cada plugin antes de instalarlo. Si no coincide, lo descarta.</li>
+              <li>Solo escribe en su propia carpeta de programa y en la carpeta VST3. Pide permiso de administrador únicamente para copiar los plugins a esa carpeta, una vez por operación.</li>
+              <li>No pide cuenta ni datos personales. Las estadísticas anónimas son opcionales y vienen apagadas.</li>
+              <li>Los archivos se publican sin firma digital de editor. Windows puede impedir su ejecución según la configuración del equipo.</li>
+            </ul>
+            <p class="faq__fine">Ningún análisis da una garantía absoluta. Por eso te dejamos las herramientas para que lo compruebes vos.</p>
+          </div>
+        </details>
+        <details class="reveal"><summary>¿En qué DAW funcionan los plugins?</summary><div class="faq__body"><p>En cualquier DAW de Windows que cargue VST3. El launcher los instala en <code>C:\Program Files\Common Files\VST3</code>, la carpeta que escanean todos.</p></div></details>
+        <details class="reveal" id="faq-data"><summary>¿Qué datos envía el launcher?</summary><div class="faq__body"><p>Ninguno tuyo. Lee el catálogo público en GitHub para saber si hay plugins nuevos o actualizaciones.</p></div></details>
+        <details class="reveal"><summary>¿Hay versión para macOS?</summary><div class="faq__body"><p>Todavía no. Por ahora el launcher y los plugins son solo para Windows 10 y 11 de 64 bits.</p></div></details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="foot__top">
+      <span class="foot__brand"><img class="logo-light" src="assets/logo.svg" alt="" width="24" height="24" /><img class="logo-dark" src="assets/logo-invertido.svg" alt="" width="24" height="24" />ZUENA Plugins</span>
+      <nav class="foot__links" aria-label="Legal y enlaces">
+        <button type="button" class="linkbtn" data-dialog="dlg-terminos">Términos y condiciones</button>
+        <button type="button" class="linkbtn" data-dialog="dlg-privacidad">Privacidad y cookies</button>
+        <button type="button" class="linkbtn" data-cookie-reopen>Aviso de cookies</button>
+        <a href="https://github.com/kiannnx/zuena-plugins" rel="noopener">Código fuente</a>
+        <a href="https://github.com/kiannnx/zuena-plugins-releases/releases" rel="noopener">Releases en GitHub</a>
+      </nav>
+    </div>
+    <p class="foot__rights">© <span data-year>2026</span> Luciano Bengolea · k1anN. Código abierto bajo <a href="https://github.com/kiannnx/zuena-plugins/blob/main/LICENSE" rel="noopener">AGPLv3</a>. El nombre y el logo ZUENA están reservados.</p>
+    <p class="foot__fine"><span id="foot-updated"></span> Componentes de terceros bajo sus propias licencias: JUCE, Electron, GSAP y tipografías OFL.</p>
+  </footer>
+
+  <!-- Aviso de cookies -->
+  <aside class="cookie" id="cookie" role="region" aria-label="Aviso de cookies" hidden>
+    <p><b>Sin cookies ni rastreadores.</b> Esta página no usa analíticas ni publicidad. Solo guardamos en tu navegador que cerraste este aviso.</p>
+    <div class="cookie__actions">
+      <button type="button" class="btn btn--sm btn--primary" data-cookie-ok>Entendido</button>
+      <button type="button" class="btn btn--sm" data-dialog="dlg-privacidad">Ver la política</button>
+    </div>
+  </aside>
+
+  <!-- Términos y condiciones -->
+  <dialog class="legal" id="dlg-terminos" aria-labelledby="t-title">
+    <div class="legal__head"><h2 id="t-title">Términos y condiciones</h2><button type="button" class="legal__close" data-close aria-label="Cerrar">×</button></div>
+    <div class="legal__body">
+      <p class="legal__date">Última actualización: 27 de noviembre de 2026.</p>
+      <h3>1. Quién ofrece ZUENA Plugins</h3>
+      <p>ZUENA Plugins (el launcher y los plugins de audio) es un proyecto de Luciano Bengolea, conocido como k1anN. Al descargarlo o usarlo aceptás estos términos.</p>
+      <h3>2. Qué podés hacer</h3>
+      <p>Podés descargar, instalar y usar el launcher y los plugins gratis, en todos los equipos que quieras, para uso personal y comercial. Lo que produzcas con ellos es tuyo: podés publicarlo y venderlo.</p>
+      <p>El código es abierto bajo la <a href="https://github.com/kiannnx/zuena-plugins/blob/main/LICENSE" rel="noopener">licencia GNU AGPL versión 3</a>: podés estudiarlo, modificarlo y redistribuirlo. Si distribuís una versión modificada, tenés que publicar su código bajo la misma licencia.</p>
+      <h3>3. Qué no podés hacer</h3>
+      <ul>
+        <li>Usar el nombre ZUENA, el logo o la identidad visual en versiones modificadas, ni presentarlas como oficiales.</li>
+        <li>Quitar los avisos de autoría y de licencia.</li>
+      </ul>
+      <p>La versión oficial se descarga solo desde esta página y desde las releases de GitHub.</p>
+      <h3>4. Propiedad</h3>
+      <p>El código es de Luciano Bengolea y se publica bajo AGPLv3. El nombre ZUENA, el logo y la identidad visual no forman parte de esa licencia y siguen siendo de su autor. Los componentes de terceros (JUCE, Electron, GSAP y las tipografías Inter, Inter Tight, Instrument Serif y JetBrains Mono) se rigen por sus propias licencias.</p>
+      <h3>5. Acceso anticipado y sin garantía</h3>
+      <p>ZUENA Plugins está en acceso anticipado: es software en desarrollo activo y puede tener errores, cambiar o perder funciones entre versiones. Se ofrece «tal cual», sin garantías de ningún tipo. Probá cada versión antes de usarla en un proyecto importante y guardá copias de tus sesiones.</p>
+      <h3>6. Responsabilidad</h3>
+      <p>En la medida en que lo permita la ley, el autor no responde por daños, pérdida de datos o de trabajo derivados del uso o de la imposibilidad de usar el software.</p>
+      <h3>7. Actualizaciones</h3>
+      <p>El launcher busca versiones nuevas y te avisa antes de instalarlas. Podés apagar la conexión a internet en Ajustes. Las funciones pueden cambiar o retirarse con el tiempo.</p>
+      <h3>8. Datos</h3>
+      <p>Lo que se recopila y cómo se explica en <button type="button" class="linkbtn" data-dialog="dlg-privacidad">Privacidad y cookies</button>.</p>
+      <h3>9. Cambios en estos términos</h3>
+      <p>Si cambian, se publica la versión nueva en esta página con su fecha. Seguir usando el software después del cambio implica aceptarla.</p>
+      <h3>10. Contacto</h3>
+      <p>Por consultas, escribile al autor en GitHub: <a href="https://github.com/kiannnx" rel="noopener">github.com/kiannnx</a>.</p>
+    </div>
+  </dialog>
+
+  <!-- Privacidad y cookies -->
+  <dialog class="legal" id="dlg-privacidad" aria-labelledby="p-title">
+    <div class="legal__head"><h2 id="p-title">Privacidad y cookies</h2><button type="button" class="legal__close" data-close aria-label="Cerrar">×</button></div>
+    <div class="legal__body">
+      <p class="legal__date">Última actualización: 26 de noviembre de 2026.</p>
+      <h3>Esta página</h3>
+      <ul>
+        <li>No usa cookies, analíticas, píxeles ni publicidad.</li>
+        <li>Guarda en tu navegador (almacenamiento local) un único dato: que cerraste el aviso de cookies. Lo podés borrar desde tu navegador cuando quieras.</li>
+        <li>Está alojada en GitHub Pages y las descargas salen de GitHub. GitHub puede registrar datos técnicos de la conexión, como la dirección IP, según su <a href="https://docs.github.com/es/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener">declaración de privacidad</a>.</li>
+      </ul>
+      <h3>El launcher</h3>
+      <ul>
+        <li>No pide cuenta, nombre ni correo.</li>
+        <li>Con tu permiso, lee el catálogo público en GitHub para avisarte de plugins nuevos y actualizaciones.</li>
+        <li><b>Estadísticas anónimas (opcionales, desde la versión 0.2.3).</b> Vienen apagadas. Si las activás, envía un número al azar que identifica la instalación (no a vos), la versión del launcher, la versión de Windows, el idioma y qué plugins tenés instalados con su versión. Se guardan en un servidor de Supabase y sirven para saber cuánta gente usa cada plugin.</li>
+        <li>Si las apagás, se borra del servidor todo lo enviado desde ese equipo y se genera un número nuevo.</li>
+        <li>No se envían rutas, nombres de archivos, proyectos, ni el nombre del equipo o del usuario.</li>
+      </ul>
+      <h3>Tus derechos</h3>
+      <p>Podés apagar las estadísticas en cualquier momento desde Ajustes › Conexión, lo que borra los datos de tu instalación. Para cualquier consulta, escribile al autor en <a href="https://github.com/kiannnx" rel="noopener">GitHub</a>.</p>
+      <p>Responsable: Luciano Bengolea (k1anN).</p>
+    </div>
+  </dialog>
+</body>
+</html>

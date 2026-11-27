@@ -1,0 +1,349 @@
+{
+  "schema": 1,
+  "updated": "2026-11-27",
+  "featured": "zuena-eq",
+  "plugins": [
+    {
+      "id": "zuena-eq",
+      "name": "ZUENA EQ",
+      "status": "available",
+      "version": "0.3.5",
+      "category": "Ecualizador dinámico",
+      "icon": "filter",
+      "accent": [
+        "#5ff0ff",
+        "#b9a8ff"
+      ],
+      "bundle": "ZUENA EQ.vst3",
+      "tagline": "Ecualizador dinámico de 24 bandas con Fase Natural 2x",
+      "description": "ZUENA EQ procesa todo en 64 bits con filtros de estado variable (TPT SVF) diseñados para seguir la curva analógica hasta el borde del espectro. Los cambios de tipo, pendiente o canal se funden en 5 ms, así que podés automatizarlo sin clics.\n\nLa interfaz muestra la curva compuesta, cada banda por separado, la fase y el espectro antes y después. Podés crear bandas con doble clic, seleccionar varias con un lazo, escribir la frecuencia como nota musical (A4) y deshacer cualquier cambio.",
+      "tags": [
+        "EQ",
+        "Fase Natural",
+        "Dinámico",
+        "Mid/Side"
+      ],
+      "downloads": {
+        "win32": {
+          "url": "bundled://zuena-eq-0.3.5-win32.zip",
+          "sha256": "70805a94f1b4a85fed97b6deb05d3d8f0fc80e76c1ca01f01a7a1cbcb5985554",
+          "size": 4160428
+        }
+      },
+      "media": {
+        "video": "bundled://zuena-eq-stage.mp4",
+        "poster": "bundled://zuena-eq-stage.jpg",
+        "videoDark": "bundled://zuena-eq-stage-oscuro.mp4",
+        "posterDark": "bundled://zuena-eq-stage-oscuro.jpg"
+      },
+      "headline": "Ecualización dinámica que *escucha* antes de cortar.",
+      "summary": "Cada banda puede reaccionar a la música: corta una resonancia solo cuando aparece y la suelta cuando se va. Trabajá Mid y Side por separado y elegí entre latencia cero o Fase Natural sobremuestreada.",
+      "highlights": [
+        {
+          "icon": "dynamic",
+          "title": "Dinámica por banda",
+          "text": "Umbral, rango, ratio, ataque y relajación en cada banda. El detector escucha solo su zona de frecuencias."
+        },
+        {
+          "icon": "phase",
+          "title": "Latencia cero o Fase Natural",
+          "text": "Fase Natural procesa a 2x con un filtro halfband de 63 coeficientes: 31 muestras de latencia, informadas al DAW."
+        },
+        {
+          "icon": "stereo",
+          "title": "Estéreo, L, R, Mid y Side",
+          "text": "Cada banda elige qué parte de la señal procesa, con fundidos sin clics al cambiar."
+        },
+        {
+          "icon": "spectrum",
+          "title": "Analizador antes y después",
+          "text": "FFT de 4096 puntos con ventana Blackman-Harris, retención de picos y congelado."
+        },
+        {
+          "icon": "gain",
+          "title": "Auto-Gain y escala global",
+          "text": "Compará sin que el volumen te engañe y escalá toda la curva de 0 a 200 %."
+        },
+        {
+          "icon": "compare",
+          "title": "A/B, presets y deshacer",
+          "text": "Dos estados para comparar, presets de fábrica y deshacer y rehacer de cada gesto."
+        }
+      ],
+      "gallery": [
+        {
+          "src": "bundled://zuena-eq-shot-claro.jpg",
+          "caption": "Vista completa en modo claro"
+        },
+        {
+          "src": "bundled://zuena-eq-shot-oscuro.jpg",
+          "caption": "Modo oscuro"
+        },
+        {
+          "src": "bundled://zuena-eq-shot-banda.jpg",
+          "caption": "Banda con dinámica"
+        },
+        {
+          "src": "bundled://zuena-eq-shot-curva.jpg",
+          "caption": "Curva, fase y analizador"
+        }
+      ],
+      "specs": [
+        [
+          "Formato",
+          "VST3 · 64 bits"
+        ],
+        [
+          "Sistema",
+          "Windows x64"
+        ],
+        [
+          "Bandas",
+          "24"
+        ],
+        [
+          "Tipos de filtro",
+          "10"
+        ],
+        [
+          "Pendientes de corte",
+          "6 a 96 dB/oct"
+        ],
+        [
+          "Procesamiento",
+          "64 bits (double)"
+        ],
+        [
+          "Latencia",
+          "0 o 31 muestras"
+        ],
+        [
+          "Parámetros automatizables",
+          "365"
+        ]
+      ],
+      "changelog": [
+        {
+          "version": "0.3.5",
+          "date": "2026-11-27",
+          "items": [
+            "Ficha de banda rediseñada: perillas grandes con el color de la banda, selectores a lo ancho y medidor en vivo de la dinámica.",
+            "Espectro más legible: contorno suavizado, luz que se desvanece hacia abajo y Pre como contorno discreto."
+          ]
+        },
+        {
+          "version": "0.3.4",
+          "date": "2026-11-26",
+          "items": [
+            "Interfaz más liviana: las curvas de cada banda se recalculan solo cuando cambian y el gráfico no se redibuja si nada se mueve.",
+            "En monitores de 120/144/165 Hz la interfaz ya no dibuja más cuadros de los que se ven (tope de 60 a 80 por segundo)."
+          ]
+        },
+        {
+          "version": "0.3.3",
+          "date": "2026-11-26",
+          "items": [
+            "Tamaño de la interfaz de 70 % a 130 % (botón en la barra inferior): entra en notebooks y pantallas chicas.",
+            "La primera vez se abre con el tamaño más grande que entra en tu pantalla; después recuerda el que elijas."
+          ]
+        },
+        {
+          "version": "0.3.2",
+          "date": "2026-11-26",
+          "items": [
+            "La ficha de banda ya no aparece vacía al abrir el plugin: solo se muestra al seleccionar una banda."
+          ]
+        },
+        {
+          "version": "0.3.1",
+          "date": "2026-11-26",
+          "items": [
+            "El modo oscuro ya no parpadea con varias instancias abiertas.",
+            "El bypass global en Fase Natural deja la señal intacta, sin ganancia de salida ni Auto-Gain.",
+            "La interfaz sigue respondiendo aunque el DAW deje de refrescar la ventana.",
+            "El archivo del plugin informa su versión real a Windows."
+          ]
+        },
+        {
+          "version": "0.3.0",
+          "date": "2026-11-26",
+          "items": [
+            "Fase Natural 2x, Auto-Gain y escala global de 0 a 200 %.",
+            "Nuevos filtros Flat Tilt y All Pass.",
+            "Modo oscuro, presets de fábrica y comparación A/B.",
+            "Selección múltiple con lazo y entrada de frecuencia por nota musical."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "zuena-luma",
+      "name": "ZUENA Luma",
+      "version": "0.4.0",
+      "status": "available",
+      "category": "Compresor óptico",
+      "icon": "knob",
+      "accent": [
+        "#ffd28a",
+        "#b9a8ff"
+      ],
+      "bundle": "ZUENA Luma.vst3",
+      "tagline": "Compresión óptica con memoria y vúmetro calibrado",
+      "description": "Luma nivela voces, bajos y buses con una célula óptica de dos tiempos. Elegí entre el detector Clásico y Precisión, con filtros calibrados y energía medida por canal. Ajustá ataque, recuperación y límite de reducción, y escuchá el detector para afinar el sidechain.",
+      "headline": "La luz tiene *memoria*.",
+      "summary": "Nivelá una voz de cerca o sostené un bajo. La célula recupera según cuánto tiempo recibió señal. Escuchá el resultado y seguí en la aguja la reducción que aplica.",
+      "tags": [
+        "Óptico",
+        "Voces",
+        "Sidechain",
+        "Paralelo"
+      ],
+      "highlights": [
+        {
+          "icon": "dynamic",
+          "title": "Dos tiempos ópticos",
+          "text": "La rama rápida sigue los ataques con un ajuste de 1 a 40 ms. La lenta responde a las notas sostenidas. Recuperación ajusta las dos."
+        },
+        {
+          "icon": "gain",
+          "title": "Compress y Limit",
+          "text": "Elegí 3:1 o 12:1 con rodilla suave y fijá cuántos decibeles puede reducir. La ganancia afecta la rama comprimida."
+        },
+        {
+          "icon": "spectrum",
+          "title": "Detector por frecuencia",
+          "text": "En Precisión, el paso alto coincide con la frecuencia seleccionada y el énfasis tiene su punto medio en 3,5 kHz. Escuchá qué está disparando la reducción."
+        },
+        {
+          "icon": "stereo",
+          "title": "Sidechain y enlace L/R",
+          "text": "Usá el bus auxiliar del DAW y elegí cuánta reducción comparten los canales, desde dos respuestas independientes hasta un enlace completo."
+        },
+        {
+          "icon": "compare",
+          "title": "Vúmetro e historial L/R",
+          "text": "Alterná reducción, entrada y salida. El historial muestra la reducción por canal y los picos de entrada y salida se leen por separado."
+        },
+        {
+          "icon": "voice",
+          "title": "Mezcla paralela",
+          "text": "Combiná la señal directa y la comprimida sin añadir latencia. Cuatro ajustes de fábrica cubren voz, bajo, bus paralelo e inicio."
+        }
+      ],
+      "gallery": [
+        {
+          "src": "bundled://zuena-luma-shot-claro.jpg",
+          "caption": "Panel claro de la versión 0.1.0"
+        },
+        {
+          "src": "bundled://zuena-luma-shot-oscuro.jpg",
+          "caption": "Panel oscuro de la versión 0.1.0"
+        }
+      ],
+      "specs": [
+        [
+          "Formato",
+          "VST3 · Windows x64"
+        ],
+        [
+          "Canales",
+          "Mono o estéreo con enlace regulable"
+        ],
+        [
+          "Modo",
+          "Compress 3:1 · Limit 12:1"
+        ],
+        [
+          "Detector",
+          "Interno o sidechain mono/estéreo"
+        ],
+        [
+          "Referencia",
+          "0 VU = −18 dBFS de pico senoidal"
+        ],
+        [
+          "Latencia",
+          "0 muestras"
+        ],
+        [
+          "Precisión",
+          "32 o 64 bits según el DAW"
+        ],
+        [
+          "Automatización",
+          "14 parámetros"
+        ]
+      ],
+      "changelog": [
+        {
+          "version": "0.4.0",
+          "date": "2026-11-27",
+          "items": [
+            "Ganancia automática: repone lo que quita la compresión a una señal de −18 dBFS RMS (0 VU), para comparar con y sin efecto a igual volumen.",
+            "Modo Precisión con ataque dependiente del programa: los golpes grandes se controlan más rápido, como una célula óptica real.",
+            "Curva de compresión en pantalla con el punto de trabajo en vivo."
+          ]
+        },
+        {
+          "version": "0.3.0",
+          "date": "2026-11-26",
+          "items": [
+            "Modo Precisión con detector RMS de dos polos, filtros calibrados y una transición más suave alrededor del umbral.",
+            "El enlace estéreo de Precisión mide la energía de cada canal antes de compararlos.",
+            "El modo Clásico conserva el detector de las versiones anteriores y se selecciona al abrir esas sesiones."
+          ]
+        },
+        {
+          "version": "0.2.0",
+          "date": "2026-11-26",
+          "items": [
+            "Ataque, límite de reducción y enlace estéreo regulables.",
+            "Escucha del detector y fundido por potencia al cambiar de entrada.",
+            "Procesamiento a 32 o 64 bits y compatibilidad con los estados de 0.1.0.",
+            "Panel renovado con vúmetro, picos de muestra e historial de reducción por canal."
+          ]
+        },
+        {
+          "version": "0.1.0",
+          "date": "2026-11-26",
+          "items": [
+            "Primera edición de Luma con memoria óptica, sidechain, presets y medición de entrada, salida y reducción."
+          ]
+        }
+      ],
+      "downloads": {
+        "win32": {
+          "url": "bundled://zuena-luma-0.4.0-win32.zip",
+          "sha256": "226eee22e79df614d1ab504c2752efb81e96198984cccdc48bad6bfc1cbb700e",
+          "size": 3928010
+        }
+      },
+      "media": {
+        "video": "bundled://zuena-luma-stage.mp4",
+        "poster": "bundled://zuena-luma-stage.jpg",
+        "videoDark": "bundled://zuena-luma-stage-oscuro.mp4",
+        "posterDark": "bundled://zuena-luma-stage-oscuro.jpg"
+      }
+    },
+    {
+      "id": "voxtransit",
+      "name": "VoxTransit",
+      "status": "coming-soon",
+      "version": "0.1.0",
+      "category": "Transiciones vocales",
+      "icon": "mic",
+      "accent": [
+        "#ffb3e1",
+        "#b9a8ff"
+      ],
+      "bundle": "VoxTransit.vst3",
+      "tagline": "Transiciones vocales sincronizadas al BPM",
+      "description": "Capturá una voz desde tu pista y convertila en entradas y salidas: risers, reverse swells, tape stops y dub throws. 30 presets, render sincronizado al tempo y arrastre directo del .wav a tu DAW.",
+      "tags": [
+        "Voz",
+        "Transiciones",
+        "Drag & Drop"
+      ]
+    }
+  ]
+}

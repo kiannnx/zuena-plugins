@@ -1,0 +1,26 @@
+# Compilación (se regenera con tools\build.cmd)
+/build/
+
+# Launcher: dependencias, empaquetado y capturas de E2E
+node_modules/
+/Free-VST-Client/dist/
+/Free-VST-Client/e2e/shots/
+
+# Configuración local
+.claude/settings.local.json
+/Obsidian-Vault/.obsidian/workspace*.json
+/Obsidian-Vault/.obsidian/cache
+
+# Secretos (nunca en el repositorio)
+*.pfx
+*.p12
+*.key
+.env
+
+# Sistema
+Thumbs.db
+desktop.ini
+*.tmp
+
+# Copia de trabajo del repositorio público de publicación (solo binarios)
+/publish/
