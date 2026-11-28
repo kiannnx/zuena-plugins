@@ -17,3 +17,4 @@ endif()
 
 add_subdirectory(plugins/ZuenaEQ)
 add_subdirectory(plugins/ZuenaLuma)
+add_subdirectory(plugins/ZuenaLink)

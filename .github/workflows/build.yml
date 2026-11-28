@@ -38,6 +38,12 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & build/release/plugins/ZuenaLuma/luma_tests.exe
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          # ZUENA Link: núcleo (anillo, puente de relojes, WAV, rutas, protocolo) y capa Windows
+          # (memoria compartida entre procesos, motor → receptor de OBS, grabación, WASAPI, tiempo real).
+          & build/release/plugins/ZuenaLink/link_core_tests.exe
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & build/release/plugins/ZuenaLink/link_platform_tests.exe
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Auditoría de interfaz y VST3
         shell: pwsh
@@ -47,6 +53,12 @@ jobs:
           & build/release/plugins/ZuenaLuma/luma_qa_artefacts/Release/luma_qa.exe editor
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & build/release/plugins/ZuenaLuma/luma_qa_artefacts/Release/luma_qa.exe host "build/release/plugins/ZuenaLuma/ZuenaLuma_artefacts/Release/VST3/ZUENA Luma.vst3"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & build/release/plugins/ZuenaLink/link_qa_artefacts/Release/link_qa.exe editor build/link-capturas
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & build/release/plugins/ZuenaLink/link_qa_artefacts/Release/link_qa.exe host "build/release/plugins/ZuenaLink/ZuenaLink_artefacts/Release/VST3/ZUENA Link.vst3"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          node plugins/ZuenaLink/tools/check-ui-text.mjs
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - uses: actions/setup-node@v4
@@ -71,4 +83,7 @@ jobs:
           path: |
             build/release/plugins/ZuenaEQ/ZuenaEQ_artefacts/Release/VST3/
             build/release/plugins/ZuenaLuma/ZuenaLuma_artefacts/Release/VST3/
+            build/release/plugins/ZuenaLink/ZuenaLink_artefacts/Release/VST3/
+            build/release/plugins/ZuenaLink/zuena-link.dll
+            build/link-capturas/
           if-no-files-found: error
