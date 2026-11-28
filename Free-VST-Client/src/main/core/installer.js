@@ -48,6 +48,29 @@ async function probeWritable(dir) {
 
 const LOCK_CODES = new Set(['EBUSY', 'EPERM', 'EACCES']);
 const exists = (p) => fsp.access(p).then(() => true, () => false);
+/** Qué programa tiene el archivo abierto: la fuente de OBS la carga OBS; los .vst3, el DAW. */
+const busyHint = (p) => (/obs-studio/i.test(p) ? 'Cerrá OBS y probá de nuevo.' : 'Cerrá tu DAW y probá de nuevo.');
+const MODULE_RE = /^[a-z0-9][a-z0-9-]{0,63}$/;
+
+/**
+ * Módulos de OBS dentro del paquete: carpeta obs-studio/<módulo>/bin/64bit/<módulo>.dll (más data/).
+ * Están junto a los .vst3, en la raíz o en la misma carpeta contenedora.
+ */
+async function findObsModules(root) {
+  const candidates = [path.join(root, 'obs-studio')];
+  const dirs = (await fsp.readdir(root, { withFileTypes: true })).filter((d) => d.isDirectory() && d.name !== 'obs-studio');
+  if (dirs.length === 1) candidates.push(path.join(root, dirs[0].name, 'obs-studio'));
+  for (const base of candidates) {
+    if (!(await exists(base))) continue;
+    const found = [];
+    for (const d of await fsp.readdir(base, { withFileTypes: true })) {
+      if (!d.isDirectory() || !MODULE_RE.test(d.name)) continue;
+      if (await exists(path.join(base, d.name, 'bin', '64bit', `${d.name}.dll`))) found.push(path.join(base, d.name));
+    }
+    return found;
+  }
+  return [];
+}
 
 /**
  * Aparta un bundle existente renombrándolo. En Windows el renombrado falla si el DAW tiene la DLL
@@ -60,7 +83,7 @@ async function moveAside(p) {
   try {
     await fsp.rename(p, aside);
   } catch (e) {
-    if (LOCK_CODES.has(e.code)) throw new InstallError('BUSY', `${path.basename(p)} está en uso. Cerrá tu DAW y probá de nuevo.`);
+    if (LOCK_CODES.has(e.code)) throw new InstallError('BUSY', `${path.basename(p)} está en uso. ${busyHint(p)}`);
     throw e;
   }
   return aside;
@@ -105,10 +128,11 @@ async function applyOps(ops, targetDir, runElevated) {
 }
 
 /**
- * @param {{zipPath: string, targetDir: string, stagingDir: string, runElevated?: Function}} o
- * @returns {Promise<{files: string[], elevated: boolean}>}
+ * @param {{zipPath: string, targetDir: string, stagingDir: string, obsDir?: string, runElevated?: Function}} o
+ *   obsDir: carpeta de plugins de OBS; si el paquete trae una fuente de OBS, se instala ahí.
+ * @returns {Promise<{files: string[], obs: string[], elevated: boolean}>}
  */
-async function installPackage({ zipPath, targetDir, stagingDir, runElevated }) {
+async function installPackage({ zipPath, targetDir, stagingDir, obsDir, runElevated }) {
   const staging = path.resolve(stagingDir);
   await fsp.rm(staging, { recursive: true, force: true });
   await fsp.mkdir(staging, { recursive: true });
@@ -132,7 +156,22 @@ async function installPackage({ zipPath, targetDir, stagingDir, runElevated }) {
         throw new InstallError('VERIFY', `No se encontró ${path.basename(o.to)} tras la instalación`);
       }
     }
-    return { files: ops.map((o) => o.to), elevated };
+    const obs = [];
+    let obsElevated = false;
+    const modules = obsDir ? await findObsModules(staging) : [];
+    if (modules.length) {
+      const obsOps = modules.map((from) => ({ op: 'replace', from, to: path.join(obsDir, path.basename(from)) }));
+      for (const o of obsOps) {
+        if (!isInside(obsDir, o.to)) throw new InstallError('PATH', 'Ruta de destino no permitida');
+      }
+      obsElevated = (await applyOps(obsOps, obsDir, runElevated)).elevated;
+      for (const o of obsOps) {
+        const dll = path.join(o.to, 'bin', '64bit', `${path.basename(o.to)}.dll`);
+        if (!(await exists(dll))) throw new InstallError('VERIFY', 'No se encontró la fuente de OBS tras la instalación');
+        obs.push(o.to);
+      }
+    }
+    return { files: ops.map((o) => o.to), obs, elevated: elevated || obsElevated };
   } finally {
     await fsp.rm(staging, { recursive: true, force: true }).catch(() => {});
   }
@@ -155,4 +194,15 @@ async function uninstallFiles({ files, targetDir, runElevated }) {
   return applyOps(existing.map((p) => ({ op: 'remove', path: p })), targetDir, runElevated);
 }
 
-module.exports = { installPackage, uninstallFiles, findBundles, isInside, InstallError };
+/** Quita módulos de OBS instalados. Solo carpetas de módulo directamente dentro de `obsDir`. */
+async function uninstallObsModules({ dirs, obsDir, runElevated }) {
+  const safe = dirs.filter((d) => isInside(obsDir, d) && path.dirname(path.resolve(d)) === path.resolve(obsDir)
+    && MODULE_RE.test(path.basename(d)));
+  if (safe.length !== dirs.length) throw new InstallError('PATH', 'Registro de instalación con rutas no permitidas');
+  const existing = [];
+  for (const d of safe) if (await exists(d)) existing.push(d);
+  if (existing.length === 0) return { elevated: false };
+  return applyOps(existing.map((p) => ({ op: 'remove', path: p })), obsDir, runElevated);
+}
+
+module.exports = { installPackage, uninstallFiles, uninstallObsModules, findBundles, findObsModules, isInside, InstallError };

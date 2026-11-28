@@ -9,7 +9,8 @@ const crypto = require('node:crypto');
 
 const { validateCatalog, loadCatalog, compareVersions, isAllowedUrl, isBundledUrl, resolveBundledUrls } = require('../src/main/core/catalog');
 const { download } = require('../src/main/core/downloader');
-const { installPackage, uninstallFiles, isInside } = require('../src/main/core/installer');
+const { installPackage, uninstallFiles, uninstallObsModules, isInside } = require('../src/main/core/installer');
+const { obsPluginsDir } = require('../src/main/core/paths');
 const { createZip } = require('../src/main/core/zip');
 const { startDemoServer } = require('../src/main/core/demo-server');
 const { startPackageServer } = require('../src/main/core/package-server');
@@ -189,6 +190,47 @@ test('extracción: zip-slip (../) rechazado sin escribir fuera', async () => {
   await assert.rejects(installPackage({ zipPath: zip, targetDir: path.join(dir, 'VST3'), stagingDir: path.join(dir, 's', 'stage') }), { code: 'ZIP' });
   await assert.rejects(fs.access(path.join(dir, 'evil.txt')));
   await assert.rejects(fs.access(path.join(dir, 'VST3')));
+});
+
+test('ZUENA Link: el paquete con fuente de OBS instala el VST3 y el módulo de OBS, y los desinstala', async () => {
+  const dir = await tmp();
+  const zip = path.join(dir, 'link.zip');
+  await fs.writeFile(zip, createZip([
+    { name: 'ZUENA Link.vst3/' },
+    { name: 'ZUENA Link.vst3/Contents/' },
+    { name: 'ZUENA Link.vst3/Contents/x86_64-win/' },
+    { name: 'ZUENA Link.vst3/Contents/x86_64-win/ZUENA Link.vst3', data: 'vst3' },
+    { name: 'obs-studio/' },
+    { name: 'obs-studio/zuena-link/' },
+    { name: 'obs-studio/zuena-link/bin/' },
+    { name: 'obs-studio/zuena-link/bin/64bit/' },
+    { name: 'obs-studio/zuena-link/bin/64bit/zuena-link.dll', data: 'obs' },
+    { name: 'obs-studio/zuena-link/data/' },
+  ]));
+  const target = path.join(dir, 'VST3');
+  const obs = path.join(dir, 'ProgramData', 'obs-studio', 'plugins');
+  const r = await installPackage({ zipPath: zip, targetDir: target, obsDir: obs, stagingDir: path.join(dir, 'stage') });
+  assert.deepEqual(r.files, [path.join(target, 'ZUENA Link.vst3')]);
+  assert.deepEqual(r.obs, [path.join(obs, 'zuena-link')]);
+  assert.equal(await fs.readFile(path.join(obs, 'zuena-link', 'bin', '64bit', 'zuena-link.dll'), 'utf8'), 'obs');
+  await assert.rejects(fs.access(path.join(target, 'obs-studio')), 'la fuente de OBS no queda en la carpeta VST3');
+  // Reinstalar (actualizar) reemplaza el módulo sin duplicarlo.
+  const again = await installPackage({ zipPath: zip, targetDir: target, obsDir: obs, stagingDir: path.join(dir, 'stage') });
+  assert.deepEqual(again.obs, r.obs);
+  // Sin carpeta de OBS (paquetes de otros plugins o modo sin OBS) se instala solo el VST3.
+  const plain = await installPackage({ zipPath: zip, targetDir: path.join(dir, 'V2'), stagingDir: path.join(dir, 'stage') });
+  assert.deepEqual(plain.obs, []);
+  await uninstallObsModules({ dirs: r.obs, obsDir: obs });
+  assert.deepEqual(await fs.readdir(obs), []);
+  // Solo carpetas de módulo directamente dentro de la carpeta de plugins de OBS.
+  await assert.rejects(uninstallObsModules({ dirs: [obs], obsDir: obs }), { code: 'PATH' });
+  await assert.rejects(uninstallObsModules({ dirs: [path.join(obs, 'zuena-link', 'bin')], obsDir: obs }), { code: 'PATH' });
+  await assert.rejects(uninstallObsModules({ dirs: [path.join(dir, 'otra')], obsDir: obs }), { code: 'PATH' });
+  // Un módulo mal armado (sin la DLL con su nombre) no se instala.
+  await fs.writeFile(zip, createZip([{ name: 'X.vst3/' }, { name: 'obs-studio/x/' }, { name: 'obs-studio/x/x.dll', data: '1' }]));
+  const odd = await installPackage({ zipPath: zip, targetDir: target, obsDir: obs, stagingDir: path.join(dir, 'stage') });
+  assert.deepEqual(odd.obs, []);
+  assert.equal(obsPluginsDir({ ProgramData: 'D:\\PD' }), path.join('D:\\PD', 'obs-studio', 'plugins'));
 });
 
 test('desinstalación: rechaza rutas fuera de la carpeta o que no son .vst3', async () => {

@@ -327,7 +327,8 @@ TEST_CASE("Dos pistas en el mismo canal: la segunda espera y las dos se enteran"
 TEST_CASE("Grabación WAV: lo grabado es exactamente lo que se envió")
 {
     const auto folder = std::filesystem::temp_directory_path() / L"zuena-link-tests";
-    std::filesystem::remove_all(folder);
+    std::error_code cleanup;
+    std::filesystem::remove_all(folder, cleanup);
     LinkEngine engine;
     engine.setRecording({folder, SampleFormat::float32});
     LinkControls c;
@@ -347,8 +348,11 @@ TEST_CASE("Grabación WAV: lo grabado es exactamente lo que se envió")
     REQUIRE(std::filesystem::exists(rec.file));
     CHECK(rec.file.filename().wstring().rfind(L"ZUENA Link ", 0) == 0);
 
-    std::ifstream f(rec.file, std::ios::binary);
-    std::vector<std::uint8_t> bytes((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
+    std::vector<std::uint8_t> bytes;
+    {
+        std::ifstream f(rec.file, std::ios::binary); // se cierra antes de borrar la carpeta
+        bytes.assign(std::istreambuf_iterator<char>(f), std::istreambuf_iterator<char>());
+    }
     WavContents w;
     REQUIRE(parseWav(bytes, w));
     CHECK(w.layout.sampleRate == 48000);
@@ -379,7 +383,9 @@ TEST_CASE("Grabación WAV: lo grabado es exactamente lo que se envió")
     }
     WARN("error máximo " << worst);
     CHECK(worst < 0.01);
-    std::filesystem::remove_all(folder);
+    std::error_code ec;
+    std::filesystem::remove_all(folder, ec);
+    CHECK_FALSE(ec);
 }
 
 TEST_CASE("Grabación WAV: carpeta imposible da un error claro, no un cuelgue")
@@ -456,7 +462,8 @@ TEST_CASE("Tiempo real: process() no reserva memoria con los tres destinos activ
     CHECK(allocations == 0);
     engine.stopRecording();
     Sleep(100);
-    std::filesystem::remove_all(std::filesystem::temp_directory_path() / L"zuena-link-rt");
+    std::error_code ec;
+    std::filesystem::remove_all(std::filesystem::temp_directory_path() / L"zuena-link-rt", ec);
 }
 
 int main(int argc, char **argv)

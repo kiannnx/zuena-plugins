@@ -8,10 +8,10 @@ const { pathToFileURL } = require('node:url');
 
 const { loadCatalog, isAllowedUrl, resolveBundledUrls, compareVersions } = require('./core/catalog');
 const { download } = require('./core/downloader');
-const { installPackage, uninstallFiles } = require('./core/installer');
+const { installPackage, uninstallFiles, uninstallObsModules } = require('./core/installer');
 const { runElevated } = require('./core/elevate');
 const { JsonStore } = require('./core/store');
-const { defaultVst3Dir } = require('./core/paths');
+const { defaultVst3Dir, obsPluginsDir } = require('./core/paths');
 const { readBundleVersion } = require('./core/bundle-info');
 const { startDemoServer } = require('./core/demo-server');
 const { startPackageServer } = require('./core/package-server');
@@ -55,6 +55,8 @@ app.setAppUserModelId(dist.APP_USER_MODEL_ID); // necesario para las notificacio
 const userFile = (name) => path.join(app.getPath('userData'), DEMO ? name.replace('.json', '-demo.json') : name);
 const sandboxDir = () => path.join(app.getPath('userData'), 'demo-VST3');
 const defaultInstallDir = () => (DEMO ? sandboxDir() : defaultVst3Dir());
+// Fuente de OBS (ZUENA Link): carpeta de plugins de OBS para todos los usuarios; en demo y pruebas, una propia.
+const obsDir = () => process.env.FREEVST_OBS_DIR || (DEMO ? path.join(sandboxDir(), 'obs-plugins') : obsPluginsDir());
 const installDir = () => settings.get('installDir') || defaultInstallDir();
 const send = (channel, payload) => { if (win && !win.isDestroyed()) win.webContents.send(channel, payload); };
 
@@ -97,7 +99,7 @@ async function computeInstalled() {
     if (present.length === 0) { delete reg[id]; dirty = true; continue; }
     const onDisk = await readBundleVersion(present[0], id);
     if (onDisk && onDisk !== rec.version) { rec.version = onDisk; dirty = true; }
-    out[id] = { version: onDisk ?? rec.version, files: present, external: false, installedAt: rec.installedAt };
+    out[id] = { version: onDisk ?? rec.version, files: present, obs: rec.obs ?? [], external: false, installedAt: rec.installedAt };
   }
   for (const p of catalog.plugins) {
     if (out[p.id] || !p.bundle) continue;
@@ -324,14 +326,16 @@ async function runJob(job, plugin, dl) {
     broadcastJobs();
     const previous = installedStore.get('plugins')[plugin.id];
     const res = await installPackage({
-      zipPath, targetDir: installDir(), stagingDir: path.join(app.getPath('temp'), `zuena-stage-${plugin.id}`), runElevated,
+      zipPath, targetDir: installDir(), obsDir: obsDir(), stagingDir: path.join(app.getPath('temp'), `zuena-stage-${plugin.id}`), runElevated,
     });
     const stale = (previous?.files ?? []).filter((f) => !res.files.includes(f));
     if (stale.length) await uninstallFiles({ files: stale, targetDir: path.dirname(stale[0]), runElevated }).catch(() => {});
-    installedStore.get('plugins')[plugin.id] = { version: plugin.version, files: res.files, installedAt: Date.now() };
+    const staleObs = (previous?.obs ?? []).filter((d) => !res.obs.includes(d));
+    if (staleObs.length) await uninstallObsModules({ dirs: staleObs, obsDir: path.dirname(staleObs[0]), runElevated }).catch(() => {});
+    installedStore.get('plugins')[plugin.id] = { version: plugin.version, files: res.files, obs: res.obs, installedAt: Date.now() };
     await installedStore.save();
     job.phase = 'done';
-    job.message = res.elevated ? 'Instalado con permisos de administrador' : 'Instalado';
+    job.message = (res.elevated ? 'Instalado con permisos de administrador' : 'Instalado') + (res.obs.length ? ' (con la fuente de OBS)' : '');
     notify('success', `${plugin.name} ${plugin.version} instalado en ${installDir()}`);
     pingStats().catch(() => {});
   } catch (e) {
@@ -351,6 +355,7 @@ async function uninstall(pluginId) {
   if (!inst) throw new Error('El plugin no está instalado');
   const name = catalog.plugins.find((p) => p.id === pluginId)?.name ?? pluginId;
   await uninstallFiles({ files: inst.files, targetDir: path.dirname(inst.files[0]), runElevated });
+  if (inst.obs?.length) await uninstallObsModules({ dirs: inst.obs, obsDir: path.dirname(inst.obs[0]), runElevated });
   delete installedStore.get('plugins')[pluginId];
   await installedStore.save();
   notify('info', `${name} desinstalado`);

@@ -20,7 +20,7 @@ try {
       # Renombrar primero: si el DAW tiene la DLL cargada falla sin borrar nada (EB-19).
       if (Test-Path -LiteralPath $o.to) {
         try { Rename-Item -LiteralPath $o.to -NewName (Split-Path -Leaf $bak) }
-        catch { throw ((Split-Path -Leaf $o.to) + ' está en uso. Cerrá tu DAW y probá de nuevo.') }
+        catch { throw ((Split-Path -Leaf $o.to) + ' está en uso. ' + $(if ($o.to -match 'obs-studio') { 'Cerrá OBS y probá de nuevo.' } else { 'Cerrá tu DAW y probá de nuevo.' })) }
       }
       try { Copy-Item -LiteralPath $o.from -Destination $o.to -Recurse -Force }
       catch {
@@ -34,7 +34,7 @@ try {
         $bak = $o.path + '.zuena-old'
         if (Test-Path -LiteralPath $bak) { Remove-Item -LiteralPath $bak -Recurse -Force }
         try { Rename-Item -LiteralPath $o.path -NewName (Split-Path -Leaf $bak) }
-        catch { throw ((Split-Path -Leaf $o.path) + ' está en uso. Cerrá tu DAW y probá de nuevo.') }
+        catch { throw ((Split-Path -Leaf $o.path) + ' está en uso. ' + $(if ($o.path -match 'obs-studio') { 'Cerrá OBS y probá de nuevo.' } else { 'Cerrá tu DAW y probá de nuevo.' })) }
         Remove-Item -LiteralPath $bak -Recurse -Force
       }
     } elseif ($o.op -eq 'mkdir') {

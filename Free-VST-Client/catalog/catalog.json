@@ -344,6 +344,117 @@
         "Transiciones",
         "Drag & Drop"
       ]
+    },
+    {
+      "id": "zuena-link",
+      "name": "ZUENA Link",
+      "version": "0.1.0",
+      "status": "available",
+      "category": "Transmisión",
+      "icon": "wave",
+      "accent": [
+        "#5ff0ff",
+        "#b9a8ff"
+      ],
+      "bundle": "ZUENA Link.vst3",
+      "tagline": "Tu pista en OBS, sin cable virtual",
+      "description": "ZUENA Link manda el audio de una pista o del master a OBS, a una salida de Windows y a un WAV, al mismo tiempo y sin tocar lo que suena en el DAW. La fuente «ZUENA Link» de OBS lo recibe por memoria compartida, con unos milisegundos de latencia y la deriva de reloj corregida.",
+      "headline": "Del DAW al *stream*, directo.",
+      "summary": "Poné Link en el master, agregá la fuente «ZUENA Link» en OBS y elegí el mismo canal. Para Streamlabs o Discord, mandalo a un cable virtual o a las salidas de loopback de tu placa.",
+      "tags": [
+        "OBS",
+        "Streaming",
+        "Loopback",
+        "Grabación"
+      ],
+      "highlights": [
+        {
+          "icon": "drag",
+          "title": "OBS directo",
+          "text": "La fuente «ZUENA Link» de OBS recibe la pista por memoria compartida: sin cable virtual, sin ASIO de por medio. El launcher instala las dos partes."
+        },
+        {
+          "icon": "tempo",
+          "title": "Relojes sincronizados",
+          "text": "El DAW y OBS nunca corren exactamente a la misma velocidad. Link corrige esa diferencia con remuestreo de alta calidad, así no aparecen clics con el paso de las horas."
+        },
+        {
+          "icon": "stereo",
+          "title": "Placas actuales",
+          "text": "Reconoce cables virtuales, Voicemeeter, Wave Link y placas con loopback (Focusrite, Universal Audio, RME, MOTU, Audient y otras) y te dice qué elegir en OBS."
+        },
+        {
+          "icon": "gain",
+          "title": "Latencia mínima",
+          "text": "WASAPI compartido de baja latencia o exclusivo, con el par de canales que elijas. La pista sale del plugin igual que entra, con 0 muestras de latencia."
+        },
+        {
+          "icon": "bands",
+          "title": "Ocho canales",
+          "text": "Mandá varias pistas por separado (voz, música, efectos) a fuentes distintas de OBS. Si dos pistas piden el mismo canal, Link avisa en las dos."
+        },
+        {
+          "icon": "voice",
+          "title": "Grabación WAV",
+          "text": "Grabá lo que se envía en 16, 24 o 32 bits flotante, desde un hilo aparte que nunca frena al DAW. El archivo queda válido aunque el DAW se cierre."
+        }
+      ],
+      "gallery": [
+        {
+          "src": "bundled://zuena-link-shot-claro.png",
+          "caption": "Panel claro de la versión 0.1.0"
+        },
+        {
+          "src": "bundled://zuena-link-shot-oscuro.png",
+          "caption": "Panel oscuro de la versión 0.1.0"
+        }
+      ],
+      "specs": [
+        [
+          "Formato",
+          "VST3 · Windows x64 + fuente para OBS 30 o posterior"
+        ],
+        [
+          "Canales",
+          "Mono o estéreo; envío mono opcional"
+        ],
+        [
+          "Latencia de la pista",
+          "0 muestras (el audio pasa intacto)"
+        ],
+        [
+          "Hacia OBS",
+          "Bloque del DAW + colchón de 5, 10 o 25 ms"
+        ],
+        [
+          "Salida",
+          "WASAPI compartido de baja latencia o exclusivo"
+        ],
+        [
+          "Grabación",
+          "WAV 16, 24 o 32 bits flotante; RF64 pasados 4 GB"
+        ],
+        [
+          "Calidad",
+          "THD+N −122 dB (mismo reloj), −111 dB de 44,1 a 48 kHz"
+        ],
+        [
+          "Automatización",
+          "5 parámetros"
+        ]
+      ],
+      "changelog": [
+        {
+          "version": "0.1.0",
+          "date": "2026-11-28",
+          "items": [
+            "Primera versión: envío a OBS por memoria compartida con su propia fuente, a una salida de Windows y a un archivo WAV.",
+            "Corrección de deriva de reloj con remuestreo polifásico: sin clics aunque el DAW y OBS corran con relojes distintos.",
+            "Detección de cables virtuales, mezcladores de streaming y placas con loopback, con la indicación de qué elegir en OBS."
+          ]
+        }
+      ],
+      "downloads": {}
     }
   ]
 }

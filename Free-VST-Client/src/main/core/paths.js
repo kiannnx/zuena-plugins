@@ -13,4 +13,12 @@ function defaultVst3Dir(platform = process.platform, env = process.env) {
   return path.join(os.homedir(), '.vst3');
 }
 
-module.exports = { defaultVst3Dir };
+/**
+ * Carpeta de plugins de OBS Studio para todos los usuarios (OBS 28 en adelante la lee sola):
+ * %ProgramData%\obs-studio\plugins\<módulo>\bin\64bit\<módulo>.dll y <módulo>\data.
+ */
+function obsPluginsDir(env = process.env) {
+  return path.join(env.ProgramData || env.ALLUSERSPROFILE || 'C:\\ProgramData', 'obs-studio', 'plugins');
+}
+
+module.exports = { defaultVst3Dir, obsPluginsDir };

@@ -20,6 +20,9 @@ const CATALOG_PATH = path.join(CLIENT_ROOT, 'catalog', 'catalog.json');
 const products = {
   'zuena-eq': { target: 'ZuenaEQ', name: 'ZUENA EQ' },
   'zuena-luma': { target: 'ZuenaLuma', name: 'ZUENA Luma' },
+  // ZUENA Link lleva además la fuente de OBS: obs-studio/zuena-link/bin/64bit/zuena-link.dll (el launcher
+  // la instala en %ProgramData%\obs-studio\plugins).
+  'zuena-link': { target: 'ZuenaLink', name: 'ZUENA Link', obsModule: 'zuena-link' },
 };
 
 /** El nombre de target procede de la lista cerrada de productos. */
@@ -67,6 +70,13 @@ async function pack(PLUGIN_ID, catalog) {
   const entries = (await collectBundleEntries(VST3_BUNDLE, bundle)).filter((e) => e.name !== manifestName);
   if (!entries.some((e) => e.name === bundle+'/Contents/Resources/')) entries.push({ name: bundle+'/Contents/Resources/' });
   entries.push({ name: manifestName, data: buildManifest({ id: PLUGIN_ID, version: VERSION }) });
+  const { obsModule } = products[PLUGIN_ID];
+  if (obsModule) {
+    const obsDll = path.join(BUILD_DIR, 'plugins', target, `${obsModule}.dll`);
+    const base = `obs-studio/${obsModule}`;
+    entries.push({ name: 'obs-studio/' }, { name: `${base}/` }, { name: `${base}/bin/` }, { name: `${base}/bin/64bit/` },
+      { name: `${base}/bin/64bit/${obsModule}.dll`, data: await fs.readFile(obsDll) }, { name: `${base}/data/` });
+  }
   const zipBuf = createZip(entries);
   const zipPath = path.join(PACKAGES_DIR, ZIP_NAME);
   await replaceFile(zipPath, zipBuf);
