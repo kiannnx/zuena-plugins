@@ -83,7 +83,10 @@ void host(const juce::String &path)
     juce::AudioPluginFormatManager manager;
     juce::addDefaultFormatsToManager(manager);
     auto p = loadPlugin(manager, path);
-    require(p->getParameters().size() == 5, "5 parámetros públicos");
+    // Los 5 parámetros de Link (el host VST3 puede sumar su propio parámetro de bypass).
+    for (const char *name : {"Enviar a OBS", "Canal", "Enviar al dispositivo", "Nivel de envío", "Envío mono"})
+        param(*p, name);
+    require(p->getParameters().size() >= 5 && p->getParameters().size() <= 6, "parámetros públicos");
     param(*p, "Canal").setValueNotifyingHost(1.0f); // Link 8
     param(*p, "Enviar a OBS").setValueNotifyingHost(1.0f);
 
@@ -211,7 +214,7 @@ void editor(const juce::File &out)
     require(ed->texts().obs == "Apagado", "estado de OBS apagado");
     click(ed->obsSwitch);
     require(value(zlink::Param::obs) >= 0.5f, "el interruptor de OBS enciende");
-    ed->channel.setSelectedId(8);
+    ed->channel.setSelectedId(8, juce::sendNotificationSync);
     loop(30);
     require(juce::roundToInt(value(zlink::Param::channel)) == 7, "el menú de canal elige Link 8");
     pump(300);
@@ -226,7 +229,7 @@ void editor(const juce::File &out)
         require(ed->texts().obs.startsWith(zlink::utf("Conectado a OBS")), "con el receptor: dice conectado, latencia y cortes");
         rx.stop();
     }
-    ed->send.setValue(-12.0);
+    ed->send.setValue(-12.0, juce::sendNotificationSync);
     loop(30);
     require(std::abs(value(zlink::Param::send) + 12.0f) < 0.05f, "el deslizador cambia el nivel de envío");
     click(ed->mono);
@@ -241,16 +244,16 @@ void editor(const juce::File &out)
     if (ed->deviceList.getNumItems() > 0)
     {
         // Elegir la primera salida la configura y la abre (con silencio: el envío está a −12 dB de 0,3 → bajo).
-        ed->send.setValue(-60.0);
-        ed->deviceList.setSelectedItemIndex(0);
+        ed->send.setValue(-60.0, juce::sendNotificationSync);
+        ed->deviceList.setSelectedItemIndex(0, juce::sendNotificationSync);
         pump(1500);
         ed->refreshNow();
         std::cout << "Dispositivo elegido: " << ed->texts().device << "\n";
         require(!processor.engine().device().id.empty(), "el menú de salida guarda el dispositivo");
-        ed->mode.setSelectedId(2);
+        ed->mode.setSelectedId(2, juce::sendNotificationSync);
         loop(30);
         require(processor.engine().device().exclusive, "el menú de modo pasa a exclusivo");
-        ed->mode.setSelectedId(1);
+        ed->mode.setSelectedId(1, juce::sendNotificationSync);
         loop(30);
         require(!processor.engine().device().exclusive, "y vuelve a compartido");
     }
@@ -260,7 +263,7 @@ void editor(const juce::File &out)
     require(value(zlink::Param::device) < 0.5f, "el interruptor de dispositivo apaga");
 
     // Grabación: formato, grabar y parar.
-    ed->format.setSelectedId(3);
+    ed->format.setSelectedId(3, juce::sendNotificationSync);
     loop(30);
     require(processor.engine().recording().format == zlink::SampleFormat::float32, "el menú de formato elige 32 bits flotante");
     click(ed->record);
@@ -279,7 +282,7 @@ void editor(const juce::File &out)
     if (out != juce::File{})
     {
         out.createDirectory();
-        ed->send.setValue(0.0);
+        ed->send.setValue(0.0, juce::sendNotificationSync);
         pump(300);
         ed->refreshNow();
         juce::PNGImageFormat png;

@@ -6,6 +6,7 @@ Plugins de audio VST3 gratuitos y su launcher para Windows. Código abierto bajo
 |---|---|
 | **ZUENA EQ** | Ecualizador dinámico de 24 bandas con fase natural 2×, analizador de espectro y ficha por banda |
 | **ZUENA Luma** | Compresor óptico con modelos Clásico y Precisión, ganancia automática y curva en pantalla |
+| **ZUENA Link** | Manda una pista a OBS (con su propia fuente para OBS, sin cable virtual), a una salida de Windows y a un WAV, con la deriva de reloj corregida |
 | **ZUENA Plugins** (launcher) | Instala y actualiza los plugins, con catálogo en línea y avisos de versiones nuevas |
 
 ## Descargar
@@ -26,7 +27,9 @@ tools\build.cmd
 
 | Objetivo | Resultado |
 |---|---|
-| `ZuenaEQ_VST3`, `ZuenaLuma_VST3` | Plugins VST3 en `build\release\plugins\<Plugin>\<Plugin>_artefacts\Release\VST3` |
+| `ZuenaEQ_VST3`, `ZuenaLuma_VST3`, `ZuenaLink_VST3` | Plugins VST3 en `build\release\plugins\<Plugin>\<Plugin>_artefacts\Release\VST3` |
+| `zuena_link_obs` | Fuente de OBS `zuena-link.dll` (se instala en `%ProgramData%\obs-studio\plugins\zuena-link\bin\64bit`) |
+| `link_core_tests`, `link_platform_tests`, `link_qa` | Pruebas de ZUENA Link: puente de relojes, memoria compartida, grabación, WASAPI, VST3 e interfaz |
 | `run_tests`, `luma_tests` | Pruebas del motor (Catch2) |
 | `zeq_snapshot` | Auditoría de la interfaz del EQ (`zeq_snapshot audit`), capturas y medición (`bench`) |
 | `luma_qa` | Auditoría del editor y del VST3 de Luma (`luma_qa editor`, `luma_qa host <vst3>`) |
@@ -42,7 +45,7 @@ npm run e2e        # pruebas de punta a punta con la app real
 npm run package    # empaqueta los plugins compilados y el launcher
 ```
 
-Con Smart App Control activado, Windows puede bloquear ejecutables recién compilados. `tools\sandbox-build.ps1` y `tools\sandbox-tests.ps1` compilan y prueban dentro de Windows Sandbox.
+Con Smart App Control activado, Windows bloquea ejecutables propios sin firmar, también dentro de Windows Sandbox. Las pruebas nativas corren en GitHub Actions (`.github/workflows/build.yml`).
 
 ## Estructura
 
@@ -50,6 +53,7 @@ Con Smart App Control activado, Windows puede bloquear ejecutables recién compi
 |---|---|
 | `plugins/ZuenaEQ` | EQ: motor DSP (`Source/Core`), estado (`Source/State`), interfaz (`Source/UI`), pruebas y herramientas |
 | `plugins/ZuenaLuma` | Compresor Luma con la misma separación |
+| `plugins/ZuenaLink` | Link: núcleo sin dependencias (`Source/Core`), capa Windows (`Source/Platform`), VST3 y fuente de OBS (`obs`) |
 | `Free-VST-Client` | Launcher Electron: proceso principal, interfaz, catálogo y pruebas |
 | `tools` | Compilación, pruebas en Sandbox, galerías y publicación |
 | `videos` | Vídeos de presentación (Remotion) |
@@ -69,4 +73,4 @@ Componentes de terceros y sus licencias: [THIRD_PARTY.md](THIRD_PARTY.md).
 
 ---
 
-**English.** Free VST3 audio plugins (ZUENA EQ, ZUENA Luma) and their Windows launcher, open source under the GNU AGPL v3. Build with Visual Studio 2022 using `tools\build.cmd` after cloning with `--recursive`. The ZUENA name and logo are not covered by the license; modified versions must use a different name and logo.
+**English.** Free VST3 audio plugins (ZUENA EQ, ZUENA Luma, ZUENA Link: send a track to OBS through its own OBS source, a Windows output or a WAV) and their Windows launcher, open source under the GNU AGPL v3. Build with Visual Studio 2022 using `tools\build.cmd` after cloning with `--recursive`. The ZUENA name and logo are not covered by the license; modified versions must use a different name and logo.

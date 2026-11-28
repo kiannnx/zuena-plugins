@@ -6,6 +6,7 @@ ZUENA Plugins usa estos componentes. Cada uno se rige por su propia licencia.
 |---|---|---|
 | [JUCE](https://github.com/juce-framework/JUCE) 8.0.17 | Base de los plugins (audio, VST3, interfaz) | AGPLv3 (opción de código abierto de JUCE) |
 | [Catch2](https://github.com/catchorg/Catch2) 3.16.1 | Pruebas en C++ | Boost Software License 1.0 |
+| [OBS Studio](https://github.com/obsproject/obs-studio) (API de plugins de libobs) | La fuente «ZUENA Link» (`plugins/ZuenaLink/obs`) se carga dentro de OBS y llama a funciones de `obs.dll`. Las declaraciones de la API se escribieron a partir de los encabezados públicos de OBS 32.2.2; no se incluye código de OBS | GPL 2.0 o posterior (compatible con AGPLv3) |
 | [Electron](https://www.electronjs.org/) | Launcher | MIT |
 | [yauzl](https://github.com/thejoshwolfe/yauzl) | Extracción de paquetes en el launcher | MIT |
 | [Playwright](https://playwright.dev/) | Pruebas de punta a punta (solo desarrollo) | Apache 2.0 |
