@@ -60,6 +60,9 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           node plugins/ZuenaLink/tools/check-ui-text.mjs
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          # La fuente de OBS real (zuena-link.dll) cargada contra un obs.dll de prueba, como la carga OBS.
+          & build/release/plugins/ZuenaLink/obs-sim/link_obs_sim.exe
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - uses: actions/setup-node@v4
         with:

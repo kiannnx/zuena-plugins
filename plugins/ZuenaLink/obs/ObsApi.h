@@ -8,6 +8,11 @@
 #include <cstddef>
 #include <cstdint>
 
+// La fuente importa estas funciones de obs.dll; el obs.dll de prueba (Tests/FakeObs.cpp) las exporta.
+#ifndef ZLINK_OBS_API
+#define ZLINK_OBS_API __declspec(dllimport)
+#endif
+
 extern "C"
 {
     struct obs_module;
@@ -135,21 +140,21 @@ extern "C"
         enum speaker_layout speakers;
     };
 
-    __declspec(dllimport) void obs_register_source_s(const struct obs_source_info *info, std::size_t size);
-    __declspec(dllimport) void obs_source_output_audio(obs_source_t *source, const struct obs_source_audio *audio);
-    __declspec(dllimport) bool obs_get_audio_info(struct obs_audio_info *oai);
-    __declspec(dllimport) long long obs_data_get_int(obs_data_t *data, const char *name);
-    __declspec(dllimport) void obs_data_set_default_int(obs_data_t *data, const char *name, long long val);
-    __declspec(dllimport) obs_properties_t *obs_properties_create(void);
-    __declspec(dllimport) obs_property_t *obs_properties_add_list(obs_properties_t *props, const char *name,
+    ZLINK_OBS_API void obs_register_source_s(const struct obs_source_info *info, std::size_t size);
+    ZLINK_OBS_API void obs_source_output_audio(obs_source_t *source, const struct obs_source_audio *audio);
+    ZLINK_OBS_API bool obs_get_audio_info(struct obs_audio_info *oai);
+    ZLINK_OBS_API long long obs_data_get_int(obs_data_t *data, const char *name);
+    ZLINK_OBS_API void obs_data_set_default_int(obs_data_t *data, const char *name, long long val);
+    ZLINK_OBS_API obs_properties_t *obs_properties_create(void);
+    ZLINK_OBS_API obs_property_t *obs_properties_add_list(obs_properties_t *props, const char *name,
                                                                   const char *description, enum obs_combo_type type,
                                                                   enum obs_combo_format format);
-    __declspec(dllimport) std::size_t obs_property_list_add_int(obs_property_t *p, const char *name, long long val);
-    __declspec(dllimport) obs_property_t *obs_properties_add_text(obs_properties_t *props, const char *name,
+    ZLINK_OBS_API std::size_t obs_property_list_add_int(obs_property_t *p, const char *name, long long val);
+    ZLINK_OBS_API obs_property_t *obs_properties_add_text(obs_properties_t *props, const char *name,
                                                                   const char *description, enum obs_text_type type);
-    __declspec(dllimport) void obs_property_set_long_description(obs_property_t *p, const char *long_description);
-    __declspec(dllimport) std::uint64_t os_gettime_ns(void);
-    __declspec(dllimport) void blog(int log_level, const char *format, ...);
+    ZLINK_OBS_API void obs_property_set_long_description(obs_property_t *p, const char *long_description);
+    ZLINK_OBS_API std::uint64_t os_gettime_ns(void);
+    ZLINK_OBS_API void blog(int log_level, const char *format, ...);
 }
 
 static_assert(sizeof(void *) == 8, "OBS 28 en adelante es solo de 64 bits");

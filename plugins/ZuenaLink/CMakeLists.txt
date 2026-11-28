@@ -60,6 +60,23 @@ if(ZUENA_BUILD_TESTS)
     add_test(NAME link_core COMMAND link_core_tests)
     add_test(NAME link_platform COMMAND link_platform_tests)
 
+    # OBS simulado: la zuena-link.dll real se carga contra un obs.dll de prueba con las mismas funciones.
+    if(MSVC)
+        set(ZLINK_SIM_DIR ${CMAKE_CURRENT_BINARY_DIR}/obs-sim)
+        add_library(link_fake_obs SHARED Tests/FakeObs.cpp)
+        set_target_properties(link_fake_obs PROPERTIES OUTPUT_NAME obs
+            RUNTIME_OUTPUT_DIRECTORY ${ZLINK_SIM_DIR} ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/obs-sim-lib)
+        target_compile_options(link_fake_obs PRIVATE /W4 /WX /utf-8)
+        add_executable(link_obs_sim Tests/ObsSim.cpp)
+        set_target_properties(link_obs_sim PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${ZLINK_SIM_DIR})
+        target_link_libraries(link_obs_sim PRIVATE link_platform link_fake_obs)
+        target_compile_options(link_obs_sim PRIVATE /W4 /WX /utf-8)
+        add_dependencies(link_obs_sim zuena_link_obs)
+        add_custom_command(TARGET link_obs_sim POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:zuena_link_obs> ${ZLINK_SIM_DIR}/zuena-link.dll)
+        add_test(NAME link_obs COMMAND link_obs_sim)
+    endif()
+
     juce_add_console_app(link_qa PRODUCT_NAME "link_qa")
     target_sources(link_qa PRIVATE Tests/LinkChecks.cpp)
     target_compile_definitions(link_qa PRIVATE JUCE_PLUGINHOST_VST3=1 JUCE_MODAL_LOOPS_PERMITTED=1)
